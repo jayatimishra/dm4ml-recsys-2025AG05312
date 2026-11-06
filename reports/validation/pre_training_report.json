@@ -5,13 +5,13 @@
     {
       "check": "pandera:train_interactions",
       "passed": true,
-      "rows": 47703,
+      "rows": 61383,
       "detail": "schema OK"
     },
     {
       "check": "pandera:test_interactions",
       "passed": true,
-      "rows": 13680,
+      "rows": 14540,
       "detail": "schema OK"
     },
     {
@@ -29,13 +29,13 @@
     {
       "check": "pandera:user_item_features@train",
       "passed": true,
-      "rows": 26433,
+      "rows": 33353,
       "detail": "schema OK"
     },
     {
       "check": "temporal_leakage",
       "passed": true,
-      "detail": "train max=2026-10-03 23:59:51, test min=2026-10-04 00:01:14, train features as_of=2026-10-04 00:00:00"
+      "detail": "train max=2026-10-17 23:59:13, test min=2026-10-18 00:00:07, train features as_of=2026-10-18 00:00:00"
     },
     {
       "check": "test_referential_integrity",
@@ -45,13 +45,13 @@
     {
       "check": "drift_psi:event_type_mix",
       "passed": true,
-      "psi": 0.0,
+      "psi": 0.0001,
       "detail": "ok"
     },
     {
       "check": "drift_psi:category_mix",
       "passed": true,
-      "psi": 0.0022,
+      "psi": 0.0025,
       "detail": "ok"
     }
   ]

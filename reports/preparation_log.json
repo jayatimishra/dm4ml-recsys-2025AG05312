@@ -8,6 +8,6 @@
   "products.price_text_parsed": 6,
   "products.price_imputed_category_median": 15,
   "products.price_winsorised_p99_5": 3,
-  "interactions.event_type_normalised": 246,
-  "interactions.rating_invalid_set_null": 42
+  "interactions.event_type_normalised": 305,
+  "interactions.rating_invalid_set_null": 53
 }

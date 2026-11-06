@@ -4,65 +4,65 @@
   "row_counts": {
     "dim_user": 1500,
     "dim_product": 600,
-    "dim_date": 166,
-    "fact_interactions": 61383
+    "dim_date": 180,
+    "fact_interactions": 75923
   },
   "snapshots": {
-    "valid": "2026-09-20 00:00:00",
-    "train": "2026-10-04 00:00:00",
-    "serve": "2026-10-18 00:00:00"
+    "valid": "2026-10-04 00:00:00",
+    "train": "2026-10-18 00:00:00",
+    "serve": "2026-11-01 00:00:00"
   },
   "feature_rows": {
     "valid": {
       "feat_user": 1500,
       "feat_item": 600,
-      "agg_user_item": 20797,
-      "feat_user_category": 7854
+      "agg_user_item": 26433,
+      "feat_user_category": 9371
     },
     "train": {
       "feat_user": 1500,
       "feat_item": 600,
-      "agg_user_item": 26433,
-      "feat_user_category": 9371
+      "agg_user_item": 33353,
+      "feat_user_category": 10891
     },
     "serve": {
       "feat_user": 1500,
       "feat_item": 600,
-      "agg_user_item": 33353,
-      "feat_user_category": 10891
+      "agg_user_item": 40220,
+      "feat_user_category": 11883
     }
   },
   "half_life_days": 30.0,
   "splits": {
     "train": {
-      "rows": 47703,
-      "users": 1405,
+      "rows": 61383,
+      "users": 1500,
       "items": 600,
       "from": "2026-05-05 08:51:59",
-      "to": "2026-10-03 23:59:51"
+      "to": "2026-10-17 23:59:13"
     },
     "valid": {
-      "rows": 10856,
-      "users": 1277,
-      "items": 597,
-      "from": "2026-09-20 00:00:40",
-      "to": "2026-10-03 23:59:51"
-    },
-    "test": {
       "rows": 13680,
       "users": 1357,
       "items": 599,
       "from": "2026-10-04 00:01:14",
       "to": "2026-10-17 23:59:13"
     },
+    "test": {
+      "rows": 14540,
+      "users": 1351,
+      "items": 598,
+      "from": "2026-10-18 00:00:07",
+      "to": "2026-10-31 23:57:56"
+    },
     "note": "valid is the last 14 days INSIDE train, used only for hyper-parameter tuning",
     "user_item_matrix_train": {
       "shape": [
-        1405,
+        1500,
         600
       ],
-      "nnz": 26433,
-      "density": 0.03136
+      "nnz": 33353,
+      "density": 0.03706
     }
   }
 }

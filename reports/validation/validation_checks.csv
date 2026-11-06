@@ -16,16 +16,16 @@ products,PRD_005,price,validity,warning,price > 0,600,3,0.995
 products,PRD_006,category,completeness,warning,category is not null,600,12,0.98
 products,PRD_007,category,consistency,warning,category matches the controlled vocabulary exactly,600,3,0.995
 products,PRD_008,currency,validity,warning,currency == INR,600,0,1.0
-interactions,INT_UNQ,event_id,uniqueness,critical,"event_id is unique (duplicates dropped, first kept)",62419,735,0.98822
-interactions,INT_001,event_id,completeness,critical,event_id is not null,61684,0,1.0
-interactions,INT_002,user_id,completeness,critical,user_id is not null,61684,116,0.99812
-interactions,INT_003,product_id,validity,critical,product_id is an integer,61684,0,1.0
-interactions,INT_004,event_timestamp,validity,critical,event_timestamp parses as YYYY-MM-DD HH:MM:SS,61684,26,0.99958
-interactions,INT_005,event_timestamp,timeliness,critical,event_timestamp is not in the future,61684,0,1.0
-interactions,INT_006,event_type,validity,critical,"event_type maps to {view, add_to_cart, purchase} after normalisation",61684,35,0.99943
-interactions,INT_007,event_type,consistency,warning,event_type already in canonical lower_snake form,61684,281,0.99544
-interactions,INT_008,rating,validity,warning,"rating is null or in [1,5]",61684,35,0.99943
-interactions,INT_009,rating,consistency,warning,rating only present on purchase events,61684,12,0.99981
-interactions,INT_010,user_id,integrity,critical,user_id exists in CRM users (FK),61684,116,0.99812
-interactions,INT_011,product_id,integrity,critical,product_id exists in product catalog (FK),61684,125,0.99797
-interactions,INT_012,device,validity,warning,"device in {mobile, desktop, tablet}",61684,0,1.0
+interactions,INT_UNQ,event_id,uniqueness,critical,"event_id is unique (duplicates dropped, first kept)",77217,915,0.98815
+interactions,INT_001,event_id,completeness,critical,event_id is not null,76302,0,1.0
+interactions,INT_002,user_id,completeness,critical,user_id is not null,76302,152,0.99801
+interactions,INT_003,product_id,validity,critical,product_id is an integer,76302,0,1.0
+interactions,INT_004,event_timestamp,validity,critical,event_timestamp parses as YYYY-MM-DD HH:MM:SS,76302,38,0.9995
+interactions,INT_005,event_timestamp,timeliness,critical,event_timestamp is not in the future,76302,0,1.0
+interactions,INT_006,event_type,validity,critical,"event_type maps to {view, add_to_cart, purchase} after normalisation",76302,38,0.9995
+interactions,INT_007,event_type,consistency,warning,event_type already in canonical lower_snake form,76302,343,0.9955
+interactions,INT_008,rating,validity,warning,"rating is null or in [1,5]",76302,40,0.99948
+interactions,INT_009,rating,consistency,warning,rating only present on purchase events,76302,18,0.99976
+interactions,INT_010,user_id,integrity,critical,user_id exists in CRM users (FK),76302,152,0.99801
+interactions,INT_011,product_id,integrity,critical,product_id exists in product catalog (FK),76302,152,0.99801
+interactions,INT_012,device,validity,warning,"device in {mobile, desktop, tablet}",76302,0,1.0

@@ -1,31 +1,31 @@
 {
   "_watermark": "Roll No: 2025AG05312",
   "model_uri": "models:/recsys_2025AG05312@champion",
-  "model_version": 1,
+  "model_version": 2,
   "user_profiles": [
     {
       "user_id": "7",
       "u_favourite_category": "Toys",
-      "u_n_events": "11",
+      "u_n_events": "13",
       "u_n_purchases": "1.0"
     },
     {
       "user_id": "42",
       "u_favourite_category": "Fashion",
-      "u_n_events": "12",
+      "u_n_events": "13",
       "u_n_purchases": "1.0"
     },
     {
       "user_id": "314",
       "u_favourite_category": "Electronics",
-      "u_n_events": "109",
-      "u_n_purchases": "13.0"
+      "u_n_events": "131",
+      "u_n_purchases": "15.0"
     },
     {
       "user_id": "1001",
       "u_favourite_category": "Office",
-      "u_n_events": "20",
-      "u_n_purchases": "2.0"
+      "u_n_events": "25",
+      "u_n_purchases": "3.0"
     }
   ]
 }

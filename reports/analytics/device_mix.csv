@@ -1,11 +1,11 @@
 # Roll No: 2025AG05312 | AIML ZG529 Data Management for Machine Learning
 device,event_type,n
-desktop,add_to_cart,4133
-desktop,purchase,2355
-desktop,view,12066
-mobile,add_to_cart,8355
-mobile,purchase,4608
-mobile,view,24406
-tablet,add_to_cart,1240
-tablet,purchase,690
-tablet,view,3530
+desktop,add_to_cart,5097
+desktop,purchase,2871
+desktop,view,14861
+mobile,add_to_cart,10311
+mobile,purchase,5695
+mobile,view,30271
+tablet,add_to_cart,1553
+tablet,purchase,866
+tablet,view,4398

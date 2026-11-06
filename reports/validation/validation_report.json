@@ -1,6 +1,6 @@
 {
   "_watermark": "Roll No: 2025AG05312",
-  "run_at": "2026-11-06T00:59:01.047981",
+  "run_at": "2026-11-06T00:59:44.204175",
   "entities": {
     "users": {
       "rows_in": 1505,
@@ -15,14 +15,14 @@
       "rows_passed": 600
     },
     "interactions": {
-      "rows_in": 62419,
-      "duplicates_dropped": 735,
-      "rows_rejected": 301,
-      "rows_passed": 61383
+      "rows_in": 77217,
+      "duplicates_dropped": 915,
+      "rows_rejected": 379,
+      "rows_passed": 75923
     }
   },
   "gate_passed": true,
-  "data_quality_score": 0.99803,
+  "data_quality_score": 0.99804,
   "checks": [
     {
       "entity": "users",
@@ -207,9 +207,9 @@
       "dimension": "uniqueness",
       "severity": "critical",
       "description": "event_id is unique (duplicates dropped, first kept)",
-      "rows_checked": 62419,
-      "rows_failed": 735,
-      "pass_rate": 0.98822
+      "rows_checked": 77217,
+      "rows_failed": 915,
+      "pass_rate": 0.98815
     },
     {
       "entity": "interactions",
@@ -218,7 +218,7 @@
       "dimension": "completeness",
       "severity": "critical",
       "description": "event_id is not null",
-      "rows_checked": 61684,
+      "rows_checked": 76302,
       "rows_failed": 0,
       "pass_rate": 1.0
     },
@@ -229,9 +229,9 @@
       "dimension": "completeness",
       "severity": "critical",
       "description": "user_id is not null",
-      "rows_checked": 61684,
-      "rows_failed": 116,
-      "pass_rate": 0.99812
+      "rows_checked": 76302,
+      "rows_failed": 152,
+      "pass_rate": 0.99801
     },
     {
       "entity": "interactions",
@@ -240,7 +240,7 @@
       "dimension": "validity",
       "severity": "critical",
       "description": "product_id is an integer",
-      "rows_checked": 61684,
+      "rows_checked": 76302,
       "rows_failed": 0,
       "pass_rate": 1.0
     },
@@ -251,9 +251,9 @@
       "dimension": "validity",
       "severity": "critical",
       "description": "event_timestamp parses as YYYY-MM-DD HH:MM:SS",
-      "rows_checked": 61684,
-      "rows_failed": 26,
-      "pass_rate": 0.99958
+      "rows_checked": 76302,
+      "rows_failed": 38,
+      "pass_rate": 0.9995
     },
     {
       "entity": "interactions",
@@ -262,7 +262,7 @@
       "dimension": "timeliness",
       "severity": "critical",
       "description": "event_timestamp is not in the future",
-      "rows_checked": 61684,
+      "rows_checked": 76302,
       "rows_failed": 0,
       "pass_rate": 1.0
     },
@@ -273,9 +273,9 @@
       "dimension": "validity",
       "severity": "critical",
       "description": "event_type maps to {view, add_to_cart, purchase} after normalisation",
-      "rows_checked": 61684,
-      "rows_failed": 35,
-      "pass_rate": 0.99943
+      "rows_checked": 76302,
+      "rows_failed": 38,
+      "pass_rate": 0.9995
     },
     {
       "entity": "interactions",
@@ -284,9 +284,9 @@
       "dimension": "consistency",
       "severity": "warning",
       "description": "event_type already in canonical lower_snake form",
-      "rows_checked": 61684,
-      "rows_failed": 281,
-      "pass_rate": 0.99544
+      "rows_checked": 76302,
+      "rows_failed": 343,
+      "pass_rate": 0.9955
     },
     {
       "entity": "interactions",
@@ -295,9 +295,9 @@
       "dimension": "validity",
       "severity": "warning",
       "description": "rating is null or in [1,5]",
-      "rows_checked": 61684,
-      "rows_failed": 35,
-      "pass_rate": 0.99943
+      "rows_checked": 76302,
+      "rows_failed": 40,
+      "pass_rate": 0.99948
     },
     {
       "entity": "interactions",
@@ -306,9 +306,9 @@
       "dimension": "consistency",
       "severity": "warning",
       "description": "rating only present on purchase events",
-      "rows_checked": 61684,
-      "rows_failed": 12,
-      "pass_rate": 0.99981
+      "rows_checked": 76302,
+      "rows_failed": 18,
+      "pass_rate": 0.99976
     },
     {
       "entity": "interactions",
@@ -317,9 +317,9 @@
       "dimension": "integrity",
       "severity": "critical",
       "description": "user_id exists in CRM users (FK)",
-      "rows_checked": 61684,
-      "rows_failed": 116,
-      "pass_rate": 0.99812
+      "rows_checked": 76302,
+      "rows_failed": 152,
+      "pass_rate": 0.99801
     },
     {
       "entity": "interactions",
@@ -328,9 +328,9 @@
       "dimension": "integrity",
       "severity": "critical",
       "description": "product_id exists in product catalog (FK)",
-      "rows_checked": 61684,
-      "rows_failed": 125,
-      "pass_rate": 0.99797
+      "rows_checked": 76302,
+      "rows_failed": 152,
+      "pass_rate": 0.99801
     },
     {
       "entity": "interactions",
@@ -339,7 +339,7 @@
       "dimension": "validity",
       "severity": "warning",
       "description": "device in {mobile, desktop, tablet}",
-      "rows_checked": 61684,
+      "rows_checked": 76302,
       "rows_failed": 0,
       "pass_rate": 1.0
     }
@@ -403,13 +403,13 @@
       "entity": "interactions",
       "gate_check": "min_row_count",
       "passed": true,
-      "detail": "rows=62419 min=1000"
+      "detail": "rows=77217 min=1000"
     },
     {
       "entity": "interactions",
       "gate_check": "null_rate[user_id]<=0.01",
       "passed": true,
-      "detail": "null_rate=0.0019"
+      "detail": "null_rate=0.0020"
     },
     {
       "entity": "interactions",
@@ -420,15 +420,15 @@
     {
       "entity": "interactions",
       "gate_check": "freshness<=7d",
-      "passed": false,
-      "detail": "latest=2026-10-17 23:59:13 staleness_days=19",
+      "passed": true,
+      "detail": "latest=2026-10-31 23:57:56 staleness_days=5",
       "severity": "warning"
     },
     {
       "entity": "interactions",
       "gate_check": "critical_reject_rate<=5%",
       "passed": true,
-      "detail": "reject_rate=0.0049"
+      "detail": "reject_rate=0.0050"
     }
   ]
 }

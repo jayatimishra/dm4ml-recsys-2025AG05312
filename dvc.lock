@@ -1,7 +1,7 @@
 schema: '2.0'
 stages:
   simulate_sources:
-    cmd: python -m src.ingestion.generate_sources --end-date 2026-10-18
+    cmd: python -m src.ingestion.generate_sources --end-date 2026-11-01
     deps:
     - path: src/ingestion/generate_sources.py
       hash: md5
@@ -9,20 +9,20 @@ stages:
       size: 9598
     params:
       configs/params.yaml:
-        source.end_date: '2026-10-18'
+        source.end_date: '2026-11-01'
     outs:
     - path: data/sources
       hash: md5
-      md5: 2cbc344f931337d0a0207b54bcad2aa3.dir
-      size: 4101928
+      md5: f45da31d2bd50a323a7e4dd68640249c.dir
+      size: 5035635
       nfiles: 3
   ingest:
     cmd: python -m src.ingestion.ingest --mode incremental
     deps:
     - path: data/sources
       hash: md5
-      md5: 2cbc344f931337d0a0207b54bcad2aa3.dir
-      size: 4101928
+      md5: f45da31d2bd50a323a7e4dd68640249c.dir
+      size: 5035635
       nfiles: 3
     - path: src/ingestion/ingest.py
       hash: md5
@@ -38,17 +38,17 @@ stages:
     outs:
     - path: data/raw
       hash: md5
-      md5: 2c6c83b844dfa1f3e5c01f495b6d35d2.dir
-      size: 4103635
-      nfiles: 7
+      md5: 315b0d77bc2959efac838e121c4cf4f6.dir
+      size: 5223777
+      nfiles: 13
   validate:
     cmd: python -m src.validation.validate
     deps:
     - path: data/raw
       hash: md5
-      md5: 2c6c83b844dfa1f3e5c01f495b6d35d2.dir
-      size: 4103635
-      nfiles: 7
+      md5: 315b0d77bc2959efac838e121c4cf4f6.dir
+      size: 5223777
+      nfiles: 13
     - path: src/validation/validate.py
       hash: md5
       md5: 83fb67d36d359f0f85efdf182a8e094a
@@ -56,25 +56,25 @@ stages:
     outs:
     - path: data/errors
       hash: md5
-      md5: 85e60874ad07f70cdd6752129adaf635.dir
-      size: 22679
+      md5: bf016a057fa71273e281e8897c06d708.dir
+      size: 28402
       nfiles: 3
     - path: data/validated
       hash: md5
-      md5: 859af2812d36c42e8ac9a749cac8f7d1.dir
-      size: 1412491
+      md5: 5933129f66354aa52955fa102edfba54.dir
+      size: 1709957
       nfiles: 3
     - path: reports/validation/validation_report.html
       hash: md5
-      md5: 14fc61dac9105af9d60632c61743f3d2
-      size: 8948
+      md5: 993581691717bad0d1fc31f6ae174712
+      size: 8947
   prepare:
     cmd: python -m src.preparation.prepare
     deps:
     - path: data/validated
       hash: md5
-      md5: 859af2812d36c42e8ac9a749cac8f7d1.dir
-      size: 1412491
+      md5: 5933129f66354aa52955fa102edfba54.dir
+      size: 1709957
       nfiles: 3
     - path: src/preparation/prepare.py
       hash: md5
@@ -83,21 +83,21 @@ stages:
     outs:
     - path: data/processed/clean
       hash: md5
-      md5: ef241a2daeb37fda255649f292e9e740.dir
-      size: 1472035
+      md5: fea3dbd24c5e5031d4391ef7339494e6.dir
+      size: 1811063
       nfiles: 3
     - path: reports/eda
       hash: md5
-      md5: 78f72de581a5cc9a02023ece5d2c7a67.dir
-      size: 415935
+      md5: 35fa8d03ac9485af7019412fa1c7c39d.dir
+      size: 420520
       nfiles: 8
   transform:
     cmd: python -m src.transformation.transform
     deps:
     - path: data/processed/clean
       hash: md5
-      md5: ef241a2daeb37fda255649f292e9e740.dir
-      size: 1472035
+      md5: fea3dbd24c5e5031d4391ef7339494e6.dir
+      size: 1811063
       nfiles: 3
     - path: src/transformation/sql
       hash: md5
@@ -111,26 +111,26 @@ stages:
     outs:
     - path: data/processed/derived
       hash: md5
-      md5: a865dd656a5265d6f8935ce718569378.dir
-      size: 882700
+      md5: 82e7c2f76b98351e43f08017d8142adb.dir
+      size: 1028156
       nfiles: 6
     - path: data/processed/splits
       hash: md5
-      md5: eabc0621b719fb7132c4a9a6eb039adc.dir
-      size: 1684106
+      md5: fead5f3aa3a27271e814d8b00b1f46ad.dir
+      size: 2077258
       nfiles: 3
     - path: data/warehouse
       hash: md5
-      md5: 257ab754a010e18620716229845fa917.dir
-      size: 19570688
+      md5: a1012d9c409532f9e9bbbe0922633c5a.dir
+      size: 24043520
       nfiles: 1
   feature_store:
     cmd: python -m src.features.feature_store
     deps:
     - path: data/warehouse
       hash: md5
-      md5: 257ab754a010e18620716229845fa917.dir
-      size: 19570688
+      md5: a1012d9c409532f9e9bbbe0922633c5a.dir
+      size: 24043520
       nfiles: 1
     - path: src/features/feature_store.py
       hash: md5
@@ -139,21 +139,21 @@ stages:
     outs:
     - path: data/features
       hash: md5
-      md5: ac481c8376093a5351fed00064c57a27.dir
-      size: 7202989
-      nfiles: 14
+      md5: 4e785aae665079df800519000d9338a5.dir
+      size: 9000719
+      nfiles: 18
   pre_training_checks:
     cmd: python -m src.validation.pre_training_checks
     deps:
     - path: data/features
       hash: md5
-      md5: ac481c8376093a5351fed00064c57a27.dir
-      size: 7202989
-      nfiles: 14
+      md5: 4e785aae665079df800519000d9338a5.dir
+      size: 9000719
+      nfiles: 18
     - path: data/processed/splits
       hash: md5
-      md5: eabc0621b719fb7132c4a9a6eb039adc.dir
-      size: 1684106
+      md5: fead5f3aa3a27271e814d8b00b1f46ad.dir
+      size: 2077258
       nfiles: 3
     - path: src/validation/pre_training_checks.py
       hash: md5
@@ -164,13 +164,13 @@ stages:
     deps:
     - path: data/features
       hash: md5
-      md5: ac481c8376093a5351fed00064c57a27.dir
-      size: 7202989
-      nfiles: 14
+      md5: 4e785aae665079df800519000d9338a5.dir
+      size: 9000719
+      nfiles: 18
     - path: data/processed/splits
       hash: md5
-      md5: eabc0621b719fb7132c4a9a6eb039adc.dir
-      size: 1684106
+      md5: fead5f3aa3a27271e814d8b00b1f46ad.dir
+      size: 2077258
       nfiles: 3
     - path: src/evaluation/metrics.py
       hash: md5
@@ -184,16 +184,16 @@ stages:
     outs:
     - path: models
       hash: md5
-      md5: 2d3e321580646a72160748d42d8a8701.dir
-      size: 17763984
+      md5: 32fcf8cc11921ce00c310da094e6a945.dir
+      size: 17846388
       nfiles: 1
   evaluate:
     cmd: python -m src.evaluation.evaluate
     deps:
     - path: models
       hash: md5
-      md5: 2d3e321580646a72160748d42d8a8701.dir
-      size: 17763984
+      md5: 32fcf8cc11921ce00c310da094e6a945.dir
+      size: 17846388
       nfiles: 1
     - path: src/evaluation/evaluate.py
       hash: md5
@@ -202,19 +202,19 @@ stages:
     outs:
     - path: reports/model/metrics.json
       hash: md5
-      md5: e4507e40492c499e61008638cbfd6ecb
-      size: 656
+      md5: 6613c712ccc4b066eb9cb7f57a0bc966
+      size: 661
     - path: reports/model/ranking_metrics.png
       hash: md5
-      md5: 7ec6bceeb164dc6e34118a07df850825
-      size: 64634
+      md5: e55a823009e46f546a1e608479c8b78c
+      size: 56839
   serve_batch:
     cmd: python -m src.serving.serve --batch
     deps:
     - path: models
       hash: md5
-      md5: 2d3e321580646a72160748d42d8a8701.dir
-      size: 17763984
+      md5: 32fcf8cc11921ce00c310da094e6a945.dir
+      size: 17846388
       nfiles: 1
     - path: src/serving/serve.py
       hash: md5
@@ -223,5 +223,5 @@ stages:
     outs:
     - path: reports/sample_recommendations.csv
       hash: md5
-      md5: 85ec0ff7126d3a683a293f5973e27300
-      size: 2701
+      md5: 519907ea18e3d980c8fa5578c897917d
+      size: 2714

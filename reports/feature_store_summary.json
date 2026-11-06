@@ -12,14 +12,14 @@
       "serve": 600
     },
     "user_item_interaction": {
-      "valid": 20797,
-      "train": 26433,
-      "serve": 33353
+      "valid": 26433,
+      "train": 33353,
+      "serve": 40220
     },
     "user_category_affinity": {
-      "valid": 7854,
-      "train": 9371,
-      "serve": 10891
+      "valid": 9371,
+      "train": 10891,
+      "serve": 11883
     }
   },
   "n_features": 37,
@@ -41,16 +41,16 @@
       {
         "user_id": "7",
         "event_timestamp": "2026-11-01 09:00:00",
-        "as_of": "2026-10-18",
-        "u_n_events": "11",
+        "as_of": "2026-11-01",
+        "u_n_events": "13",
         "u_n_purchases": "1.0"
       }
     ],
     "online": [
       {
         "user_id": "7",
-        "as_of": "2026-10-18 00:00:00",
-        "u_n_events": "11",
+        "as_of": "2026-11-01 00:00:00",
+        "u_n_events": "13",
         "u_n_purchases": "1.0",
         "_feature_version": "1"
       }

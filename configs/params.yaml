@@ -2,6 +2,6 @@
 # Pipeline parameters tracked by DVC. Changing source.end_date and running
 # `dvc repro` produces a new data version (v1 = 2026-10-18, v2 = 2026-11-01).
 source:
-  end_date: "2026-10-18"
+  end_date: "2026-11-01"
 ingest:
   mode: incremental
