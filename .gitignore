@@ -1,0 +1,15 @@
+# Roll No: 2025AG05312
+__pycache__/
+*.pyc
+.prefect/
+logs/
+mlflow.db
+mlartifacts/
+/data/sources
+/data/raw
+/data/validated
+/data/errors
+/data/processed
+/data/warehouse
+/data/features
+/models

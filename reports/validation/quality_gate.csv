@@ -1,0 +1,16 @@
+# Roll No: 2025AG05312 | AIML ZG529 Data Management for Machine Learning
+entity,gate_check,passed,detail,severity
+users,schema_columns_present,True,missing=[] unexpected=[],critical
+users,min_row_count,True,rows=1505 min=100,critical
+users,null_rate[user_id]<=0.0,True,null_rate=0.0000,critical
+users,critical_reject_rate<=5%,True,reject_rate=0.0000,critical
+products,schema_columns_present,True,missing=[] unexpected=[],critical
+products,min_row_count,True,rows=604 min=100,critical
+products,null_rate[product_id]<=0.0,True,null_rate=0.0000,critical
+products,critical_reject_rate<=5%,True,reject_rate=0.0000,critical
+interactions,schema_columns_present,True,missing=[] unexpected=[],critical
+interactions,min_row_count,True,rows=62419 min=1000,critical
+interactions,null_rate[user_id]<=0.01,True,null_rate=0.0019,critical
+interactions,null_rate[product_id]<=0.01,True,null_rate=0.0000,critical
+interactions,freshness<=7d,False,latest=2026-10-17 23:59:13 staleness_days=19,warning
+interactions,critical_reject_rate<=5%,True,reject_rate=0.0049,critical

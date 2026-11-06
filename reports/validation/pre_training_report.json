@@ -1,0 +1,58 @@
+{
+  "_watermark": "Roll No: 2025AG05312",
+  "gate_passed": true,
+  "results": [
+    {
+      "check": "pandera:train_interactions",
+      "passed": true,
+      "rows": 47703,
+      "detail": "schema OK"
+    },
+    {
+      "check": "pandera:test_interactions",
+      "passed": true,
+      "rows": 13680,
+      "detail": "schema OK"
+    },
+    {
+      "check": "pandera:user_features@train",
+      "passed": true,
+      "rows": 1500,
+      "detail": "schema OK"
+    },
+    {
+      "check": "pandera:item_features@train",
+      "passed": true,
+      "rows": 600,
+      "detail": "schema OK"
+    },
+    {
+      "check": "pandera:user_item_features@train",
+      "passed": true,
+      "rows": 26433,
+      "detail": "schema OK"
+    },
+    {
+      "check": "temporal_leakage",
+      "passed": true,
+      "detail": "train max=2026-10-03 23:59:51, test min=2026-10-04 00:01:14, train features as_of=2026-10-04 00:00:00"
+    },
+    {
+      "check": "test_referential_integrity",
+      "passed": true,
+      "detail": "test keys in dims"
+    },
+    {
+      "check": "drift_psi:event_type_mix",
+      "passed": true,
+      "psi": 0.0,
+      "detail": "ok"
+    },
+    {
+      "check": "drift_psi:category_mix",
+      "passed": true,
+      "psi": 0.0022,
+      "detail": "ok"
+    }
+  ]
+}

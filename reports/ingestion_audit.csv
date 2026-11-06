@@ -1,0 +1,5 @@
+# Roll No: 2025AG05312 | AIML ZG529 Data Management for Machine Learning
+batch_id,source,entity,mode,rows,status,duration_s,file,ingested_at
+20261106005859,clickstream,interactions,incremental,62419,SUCCESS,0.205,batch_20261106005859.csv,2026-11-06T00:58:59.475716+00:00
+20261106005859,crm,users,full_snapshot,1505,SUCCESS,0.006,batch_20261106005859.csv,2026-11-06T00:58:59.484802+00:00
+20261106005859,catalog_api,products,full_pull,604,SUCCESS,1.04,batch_20261106005859.json,2026-11-06T00:59:00.529139+00:00

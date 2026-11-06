@@ -1,0 +1,7 @@
+# Roll No: 2025AG05312 | AIML ZG529 Data Management for ML | Assignment
+# Pipeline parameters tracked by DVC. Changing source.end_date and running
+# `dvc repro` produces a new data version (v1 = 2026-10-18, v2 = 2026-11-01).
+source:
+  end_date: "2026-10-18"
+ingest:
+  mode: incremental

@@ -1,0 +1,71 @@
+{
+  "_watermark": "Roll No: 2025AG05312",
+  "batch_id": "20261106005859",
+  "clickstream": {
+    "source": "clickstream",
+    "entity": "interactions",
+    "batch_id": "20261106005859",
+    "mode": "incremental",
+    "file": "batch_20261106005859.csv",
+    "row_count": 62419,
+    "columns": [
+      "event_id",
+      "user_id",
+      "product_id",
+      "event_type",
+      "rating",
+      "event_timestamp",
+      "session_id",
+      "device"
+    ],
+    "md5": "2c36ed76d1cab99b4b807713c58fabee",
+    "bytes": 3917237,
+    "ingested_at": "2026-11-06T00:58:59.475421+00:00",
+    "ingested_by": "2025AG05312",
+    "hwm_before": null,
+    "hwm_after": "e0061684"
+  },
+  "users": {
+    "source": "crm",
+    "entity": "users",
+    "batch_id": "20261106005859",
+    "mode": "full_snapshot",
+    "file": "batch_20261106005859.csv",
+    "row_count": 1505,
+    "columns": [
+      "user_id",
+      "signup_date",
+      "age",
+      "gender",
+      "city",
+      "is_prime_member"
+    ],
+    "md5": "192e82f8d5c07e339c92f31506630bff",
+    "bytes": 53372,
+    "ingested_at": "2026-11-06T00:58:59.484614+00:00",
+    "ingested_by": "2025AG05312"
+  },
+  "products": {
+    "source": "catalog_api",
+    "entity": "products",
+    "batch_id": "20261106005859",
+    "mode": "full_pull",
+    "file": "batch_20261106005859.json",
+    "row_count": 604,
+    "columns": [
+      "brand",
+      "category",
+      "created_at",
+      "currency",
+      "in_stock",
+      "price",
+      "product_id",
+      "title"
+    ],
+    "md5": "e7313bf55d78d01f303e1c6c4e0d4f81",
+    "bytes": 131364,
+    "ingested_at": "2026-11-06T00:59:00.528981+00:00",
+    "ingested_by": "2025AG05312",
+    "pages": 7
+  }
+}

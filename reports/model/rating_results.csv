@@ -1,0 +1,4 @@
+# Roll No: 2025AG05312 | AIML ZG529 Data Management for Machine Learning
+model,rmse,mae,n_ratings
+global_mean,0.948390513005678,0.7469767916060484,943
+bias_model,0.8984024754940216,0.7212385656845002,943

@@ -1,0 +1,59 @@
+{
+  "_watermark": "Roll No: 2025AG05312",
+  "views": {
+    "user_profile_behaviour": {
+      "valid": 1500,
+      "train": 1500,
+      "serve": 1500
+    },
+    "item_popularity_quality": {
+      "valid": 600,
+      "train": 600,
+      "serve": 600
+    },
+    "user_item_interaction": {
+      "valid": 20797,
+      "train": 26433,
+      "serve": 33353
+    },
+    "user_category_affinity": {
+      "valid": 7854,
+      "train": 9371,
+      "serve": 10891
+    }
+  },
+  "n_features": 37,
+  "versions": {
+    "user_profile_behaviour": 1,
+    "item_popularity_quality": 1,
+    "user_item_interaction": 1,
+    "user_category_affinity": 1
+  },
+  "demo": {
+    "point_in_time": [
+      {
+        "user_id": "7",
+        "event_timestamp": "2026-10-20 10:00:00",
+        "as_of": "2026-10-18",
+        "u_n_events": "11",
+        "u_n_purchases": "1.0"
+      },
+      {
+        "user_id": "7",
+        "event_timestamp": "2026-11-01 09:00:00",
+        "as_of": "2026-10-18",
+        "u_n_events": "11",
+        "u_n_purchases": "1.0"
+      }
+    ],
+    "online": [
+      {
+        "user_id": "7",
+        "as_of": "2026-10-18 00:00:00",
+        "u_n_events": "11",
+        "u_n_purchases": "1.0",
+        "_feature_version": "1"
+      }
+    ]
+  }
+}

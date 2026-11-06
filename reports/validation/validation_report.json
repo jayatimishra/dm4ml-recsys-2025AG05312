@@ -1,0 +1,434 @@
+{
+  "_watermark": "Roll No: 2025AG05312",
+  "run_at": "2026-11-06T00:59:01.047981",
+  "entities": {
+    "users": {
+      "rows_in": 1505,
+      "duplicates_dropped": 5,
+      "rows_rejected": 0,
+      "rows_passed": 1500
+    },
+    "products": {
+      "rows_in": 604,
+      "duplicates_dropped": 4,
+      "rows_rejected": 0,
+      "rows_passed": 600
+    },
+    "interactions": {
+      "rows_in": 62419,
+      "duplicates_dropped": 735,
+      "rows_rejected": 301,
+      "rows_passed": 61383
+    }
+  },
+  "gate_passed": true,
+  "data_quality_score": 0.99803,
+  "checks": [
+    {
+      "entity": "users",
+      "check_id": "USR_UNQ",
+      "column": "user_id",
+      "dimension": "uniqueness",
+      "severity": "critical",
+      "description": "user_id is unique (duplicates dropped, first kept)",
+      "rows_checked": 1505,
+      "rows_failed": 5,
+      "pass_rate": 0.99668
+    },
+    {
+      "entity": "users",
+      "check_id": "USR_001",
+      "column": "user_id",
+      "dimension": "completeness",
+      "severity": "critical",
+      "description": "user_id is not null",
+      "rows_checked": 1500,
+      "rows_failed": 0,
+      "pass_rate": 1.0
+    },
+    {
+      "entity": "users",
+      "check_id": "USR_002",
+      "column": "signup_date",
+      "dimension": "validity",
+      "severity": "critical",
+      "description": "signup_date is a valid date",
+      "rows_checked": 1500,
+      "rows_failed": 0,
+      "pass_rate": 1.0
+    },
+    {
+      "entity": "users",
+      "check_id": "USR_003",
+      "column": "age",
+      "dimension": "completeness",
+      "severity": "warning",
+      "description": "age is not null",
+      "rows_checked": 1500,
+      "rows_failed": 20,
+      "pass_rate": 0.98667
+    },
+    {
+      "entity": "users",
+      "check_id": "USR_004",
+      "column": "age",
+      "dimension": "validity",
+      "severity": "warning",
+      "description": "age in [13, 100]",
+      "rows_checked": 1500,
+      "rows_failed": 15,
+      "pass_rate": 0.99
+    },
+    {
+      "entity": "users",
+      "check_id": "USR_005",
+      "column": "gender",
+      "dimension": "validity",
+      "severity": "warning",
+      "description": "gender in {F, M, O}",
+      "rows_checked": 1500,
+      "rows_failed": 5,
+      "pass_rate": 0.99667
+    },
+    {
+      "entity": "users",
+      "check_id": "USR_006",
+      "column": "city",
+      "dimension": "completeness",
+      "severity": "warning",
+      "description": "city is not null",
+      "rows_checked": 1500,
+      "rows_failed": 45,
+      "pass_rate": 0.97
+    },
+    {
+      "entity": "products",
+      "check_id": "PRD_UNQ",
+      "column": "product_id",
+      "dimension": "uniqueness",
+      "severity": "critical",
+      "description": "product_id is unique (duplicates dropped, first kept)",
+      "rows_checked": 604,
+      "rows_failed": 4,
+      "pass_rate": 0.99338
+    },
+    {
+      "entity": "products",
+      "check_id": "PRD_001",
+      "column": "product_id",
+      "dimension": "completeness",
+      "severity": "critical",
+      "description": "product_id is not null",
+      "rows_checked": 600,
+      "rows_failed": 0,
+      "pass_rate": 1.0
+    },
+    {
+      "entity": "products",
+      "check_id": "PRD_002",
+      "column": "title",
+      "dimension": "completeness",
+      "severity": "critical",
+      "description": "title is not null",
+      "rows_checked": 600,
+      "rows_failed": 0,
+      "pass_rate": 1.0
+    },
+    {
+      "entity": "products",
+      "check_id": "PRD_003",
+      "column": "price",
+      "dimension": "validity",
+      "severity": "warning",
+      "description": "price is numeric (no currency text)",
+      "rows_checked": 600,
+      "rows_failed": 6,
+      "pass_rate": 0.99
+    },
+    {
+      "entity": "products",
+      "check_id": "PRD_004",
+      "column": "price",
+      "dimension": "completeness",
+      "severity": "warning",
+      "description": "price is not null",
+      "rows_checked": 600,
+      "rows_failed": 12,
+      "pass_rate": 0.98
+    },
+    {
+      "entity": "products",
+      "check_id": "PRD_005",
+      "column": "price",
+      "dimension": "validity",
+      "severity": "warning",
+      "description": "price > 0",
+      "rows_checked": 600,
+      "rows_failed": 3,
+      "pass_rate": 0.995
+    },
+    {
+      "entity": "products",
+      "check_id": "PRD_006",
+      "column": "category",
+      "dimension": "completeness",
+      "severity": "warning",
+      "description": "category is not null",
+      "rows_checked": 600,
+      "rows_failed": 12,
+      "pass_rate": 0.98
+    },
+    {
+      "entity": "products",
+      "check_id": "PRD_007",
+      "column": "category",
+      "dimension": "consistency",
+      "severity": "warning",
+      "description": "category matches the controlled vocabulary exactly",
+      "rows_checked": 600,
+      "rows_failed": 3,
+      "pass_rate": 0.995
+    },
+    {
+      "entity": "products",
+      "check_id": "PRD_008",
+      "column": "currency",
+      "dimension": "validity",
+      "severity": "warning",
+      "description": "currency == INR",
+      "rows_checked": 600,
+      "rows_failed": 0,
+      "pass_rate": 1.0
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_UNQ",
+      "column": "event_id",
+      "dimension": "uniqueness",
+      "severity": "critical",
+      "description": "event_id is unique (duplicates dropped, first kept)",
+      "rows_checked": 62419,
+      "rows_failed": 735,
+      "pass_rate": 0.98822
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_001",
+      "column": "event_id",
+      "dimension": "completeness",
+      "severity": "critical",
+      "description": "event_id is not null",
+      "rows_checked": 61684,
+      "rows_failed": 0,
+      "pass_rate": 1.0
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_002",
+      "column": "user_id",
+      "dimension": "completeness",
+      "severity": "critical",
+      "description": "user_id is not null",
+      "rows_checked": 61684,
+      "rows_failed": 116,
+      "pass_rate": 0.99812
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_003",
+      "column": "product_id",
+      "dimension": "validity",
+      "severity": "critical",
+      "description": "product_id is an integer",
+      "rows_checked": 61684,
+      "rows_failed": 0,
+      "pass_rate": 1.0
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_004",
+      "column": "event_timestamp",
+      "dimension": "validity",
+      "severity": "critical",
+      "description": "event_timestamp parses as YYYY-MM-DD HH:MM:SS",
+      "rows_checked": 61684,
+      "rows_failed": 26,
+      "pass_rate": 0.99958
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_005",
+      "column": "event_timestamp",
+      "dimension": "timeliness",
+      "severity": "critical",
+      "description": "event_timestamp is not in the future",
+      "rows_checked": 61684,
+      "rows_failed": 0,
+      "pass_rate": 1.0
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_006",
+      "column": "event_type",
+      "dimension": "validity",
+      "severity": "critical",
+      "description": "event_type maps to {view, add_to_cart, purchase} after normalisation",
+      "rows_checked": 61684,
+      "rows_failed": 35,
+      "pass_rate": 0.99943
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_007",
+      "column": "event_type",
+      "dimension": "consistency",
+      "severity": "warning",
+      "description": "event_type already in canonical lower_snake form",
+      "rows_checked": 61684,
+      "rows_failed": 281,
+      "pass_rate": 0.99544
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_008",
+      "column": "rating",
+      "dimension": "validity",
+      "severity": "warning",
+      "description": "rating is null or in [1,5]",
+      "rows_checked": 61684,
+      "rows_failed": 35,
+      "pass_rate": 0.99943
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_009",
+      "column": "rating",
+      "dimension": "consistency",
+      "severity": "warning",
+      "description": "rating only present on purchase events",
+      "rows_checked": 61684,
+      "rows_failed": 12,
+      "pass_rate": 0.99981
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_010",
+      "column": "user_id",
+      "dimension": "integrity",
+      "severity": "critical",
+      "description": "user_id exists in CRM users (FK)",
+      "rows_checked": 61684,
+      "rows_failed": 116,
+      "pass_rate": 0.99812
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_011",
+      "column": "product_id",
+      "dimension": "integrity",
+      "severity": "critical",
+      "description": "product_id exists in product catalog (FK)",
+      "rows_checked": 61684,
+      "rows_failed": 125,
+      "pass_rate": 0.99797
+    },
+    {
+      "entity": "interactions",
+      "check_id": "INT_012",
+      "column": "device",
+      "dimension": "validity",
+      "severity": "warning",
+      "description": "device in {mobile, desktop, tablet}",
+      "rows_checked": 61684,
+      "rows_failed": 0,
+      "pass_rate": 1.0
+    }
+  ],
+  "gate": [
+    {
+      "entity": "users",
+      "gate_check": "schema_columns_present",
+      "passed": true,
+      "detail": "missing=[] unexpected=[]"
+    },
+    {
+      "entity": "users",
+      "gate_check": "min_row_count",
+      "passed": true,
+      "detail": "rows=1505 min=100"
+    },
+    {
+      "entity": "users",
+      "gate_check": "null_rate[user_id]<=0.0",
+      "passed": true,
+      "detail": "null_rate=0.0000"
+    },
+    {
+      "entity": "users",
+      "gate_check": "critical_reject_rate<=5%",
+      "passed": true,
+      "detail": "reject_rate=0.0000"
+    },
+    {
+      "entity": "products",
+      "gate_check": "schema_columns_present",
+      "passed": true,
+      "detail": "missing=[] unexpected=[]"
+    },
+    {
+      "entity": "products",
+      "gate_check": "min_row_count",
+      "passed": true,
+      "detail": "rows=604 min=100"
+    },
+    {
+      "entity": "products",
+      "gate_check": "null_rate[product_id]<=0.0",
+      "passed": true,
+      "detail": "null_rate=0.0000"
+    },
+    {
+      "entity": "products",
+      "gate_check": "critical_reject_rate<=5%",
+      "passed": true,
+      "detail": "reject_rate=0.0000"
+    },
+    {
+      "entity": "interactions",
+      "gate_check": "schema_columns_present",
+      "passed": true,
+      "detail": "missing=[] unexpected=[]"
+    },
+    {
+      "entity": "interactions",
+      "gate_check": "min_row_count",
+      "passed": true,
+      "detail": "rows=62419 min=1000"
+    },
+    {
+      "entity": "interactions",
+      "gate_check": "null_rate[user_id]<=0.01",
+      "passed": true,
+      "detail": "null_rate=0.0019"
+    },
+    {
+      "entity": "interactions",
+      "gate_check": "null_rate[product_id]<=0.01",
+      "passed": true,
+      "detail": "null_rate=0.0000"
+    },
+    {
+      "entity": "interactions",
+      "gate_check": "freshness<=7d",
+      "passed": false,
+      "detail": "latest=2026-10-17 23:59:13 staleness_days=19",
+      "severity": "warning"
+    },
+    {
+      "entity": "interactions",
+      "gate_check": "critical_reject_rate<=5%",
+      "passed": true,
+      "detail": "reject_rate=0.0049"
+    }
+  ]
+}

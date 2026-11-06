@@ -1,0 +1,31 @@
+# Roll No: 2025AG05312 | AIML ZG529 Data Management for Machine Learning
+entity,check_id,column,dimension,severity,description,rows_checked,rows_failed,pass_rate
+users,USR_UNQ,user_id,uniqueness,critical,"user_id is unique (duplicates dropped, first kept)",1505,5,0.99668
+users,USR_001,user_id,completeness,critical,user_id is not null,1500,0,1.0
+users,USR_002,signup_date,validity,critical,signup_date is a valid date,1500,0,1.0
+users,USR_003,age,completeness,warning,age is not null,1500,20,0.98667
+users,USR_004,age,validity,warning,"age in [13, 100]",1500,15,0.99
+users,USR_005,gender,validity,warning,"gender in {F, M, O}",1500,5,0.99667
+users,USR_006,city,completeness,warning,city is not null,1500,45,0.97
+products,PRD_UNQ,product_id,uniqueness,critical,"product_id is unique (duplicates dropped, first kept)",604,4,0.99338
+products,PRD_001,product_id,completeness,critical,product_id is not null,600,0,1.0
+products,PRD_002,title,completeness,critical,title is not null,600,0,1.0
+products,PRD_003,price,validity,warning,price is numeric (no currency text),600,6,0.99
+products,PRD_004,price,completeness,warning,price is not null,600,12,0.98
+products,PRD_005,price,validity,warning,price > 0,600,3,0.995
+products,PRD_006,category,completeness,warning,category is not null,600,12,0.98
+products,PRD_007,category,consistency,warning,category matches the controlled vocabulary exactly,600,3,0.995
+products,PRD_008,currency,validity,warning,currency == INR,600,0,1.0
+interactions,INT_UNQ,event_id,uniqueness,critical,"event_id is unique (duplicates dropped, first kept)",62419,735,0.98822
+interactions,INT_001,event_id,completeness,critical,event_id is not null,61684,0,1.0
+interactions,INT_002,user_id,completeness,critical,user_id is not null,61684,116,0.99812
+interactions,INT_003,product_id,validity,critical,product_id is an integer,61684,0,1.0
+interactions,INT_004,event_timestamp,validity,critical,event_timestamp parses as YYYY-MM-DD HH:MM:SS,61684,26,0.99958
+interactions,INT_005,event_timestamp,timeliness,critical,event_timestamp is not in the future,61684,0,1.0
+interactions,INT_006,event_type,validity,critical,"event_type maps to {view, add_to_cart, purchase} after normalisation",61684,35,0.99943
+interactions,INT_007,event_type,consistency,warning,event_type already in canonical lower_snake form,61684,281,0.99544
+interactions,INT_008,rating,validity,warning,"rating is null or in [1,5]",61684,35,0.99943
+interactions,INT_009,rating,consistency,warning,rating only present on purchase events,61684,12,0.99981
+interactions,INT_010,user_id,integrity,critical,user_id exists in CRM users (FK),61684,116,0.99812
+interactions,INT_011,product_id,integrity,critical,product_id exists in product catalog (FK),61684,125,0.99797
+interactions,INT_012,device,validity,warning,"device in {mobile, desktop, tablet}",61684,0,1.0
