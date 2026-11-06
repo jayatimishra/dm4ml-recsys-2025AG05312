@@ -1,36 +1,20 @@
 {
   "_watermark": "Roll No: 2025AG05312",
-  "batch_id": "20261106005942",
+  "batch_id": "20261106010652",
   "clickstream": {
+    "batch_id": "20261106010652",
     "source": "clickstream",
     "entity": "interactions",
-    "batch_id": "20261106005942",
     "mode": "incremental",
-    "file": "batch_20261106005942.csv",
-    "row_count": 14798,
-    "columns": [
-      "event_id",
-      "user_id",
-      "product_id",
-      "event_type",
-      "rating",
-      "event_timestamp",
-      "session_id",
-      "device"
-    ],
-    "md5": "a775968fa0c95c96fca6f3d818f1d8d2",
-    "bytes": 933860,
-    "ingested_at": "2026-11-06T00:59:42.633964+00:00",
-    "ingested_by": "2025AG05312",
-    "hwm_before": "e0061684",
-    "hwm_after": "e0076302"
+    "row_count": 0,
+    "file": null
   },
   "users": {
     "source": "crm",
     "entity": "users",
-    "batch_id": "20261106005942",
+    "batch_id": "20261106010652",
     "mode": "full_snapshot",
-    "file": "batch_20261106005942.csv",
+    "file": "batch_20261106010652.csv",
     "row_count": 1505,
     "columns": [
       "user_id",
@@ -42,15 +26,15 @@
     ],
     "md5": "192e82f8d5c07e339c92f31506630bff",
     "bytes": 53372,
-    "ingested_at": "2026-11-06T00:59:42.643529+00:00",
+    "ingested_at": "2026-11-06T01:06:52.506770+00:00",
     "ingested_by": "2025AG05312"
   },
   "products": {
     "source": "catalog_api",
     "entity": "products",
-    "batch_id": "20261106005942",
+    "batch_id": "20261106010652",
     "mode": "full_pull",
-    "file": "batch_20261106005942.json",
+    "file": "batch_20261106010652.json",
     "row_count": 604,
     "columns": [
       "brand",
@@ -64,7 +48,7 @@
     ],
     "md5": "e7313bf55d78d01f303e1c6c4e0d4f81",
     "bytes": 131364,
-    "ingested_at": "2026-11-06T00:59:43.674324+00:00",
+    "ingested_at": "2026-11-06T01:06:53.539190+00:00",
     "ingested_by": "2025AG05312",
     "pages": 7
   }

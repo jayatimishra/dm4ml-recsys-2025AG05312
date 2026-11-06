@@ -6,13 +6,13 @@ vars:
 stages:
   simulate_sources:
     cmd: python -m src.ingestion.generate_sources --end-date ${source.end_date}
-    deps: [src/ingestion/generate_sources.py]
+    deps: [src/common.py, src/ingestion/generate_sources.py]
     params:
       - configs/params.yaml: [source.end_date]
     outs: [data/sources]
   ingest:
     cmd: python -m src.ingestion.ingest --mode ${ingest.mode}
-    deps: [src/ingestion/ingest.py, src/ingestion/mock_product_api.py, data/sources]
+    deps: [src/common.py, src/ingestion/ingest.py, src/ingestion/mock_product_api.py, data/sources]
     params:
       - configs/params.yaml: [ingest.mode]
     outs:
@@ -20,32 +20,32 @@ stages:
           persist: true          # raw zone is append-only: keep earlier batches + high-water mark
   validate:
     cmd: python -m src.validation.validate
-    deps: [src/validation/validate.py, data/raw]
+    deps: [src/common.py, src/validation/validate.py, data/raw]
     outs: [data/validated, data/errors, reports/validation/validation_report.html]
   prepare:
     cmd: python -m src.preparation.prepare
-    deps: [src/preparation/prepare.py, data/validated]
+    deps: [src/common.py, src/preparation/prepare.py, data/validated]
     outs: [data/processed/clean, reports/eda]
   transform:
     cmd: python -m src.transformation.transform
-    deps: [src/transformation/transform.py, src/transformation/sql, data/processed/clean]
+    deps: [src/common.py, src/transformation/transform.py, src/transformation/sql, data/processed/clean]
     outs: [data/warehouse, data/processed/splits, data/processed/derived]
   feature_store:
     cmd: python -m src.features.feature_store
-    deps: [src/features/feature_store.py, data/warehouse]
+    deps: [src/common.py, src/features/feature_store.py, data/warehouse]
     outs:
       - data/features:
           persist: true          # registry keeps feature-view version history across runs
   pre_training_checks:
     cmd: python -m src.validation.pre_training_checks
-    deps: [src/validation/pre_training_checks.py, data/processed/splits, data/features]
+    deps: [src/common.py, src/validation/pre_training_checks.py, data/processed/splits, data/features]
   train:
     cmd: python -m src.training.train
-    deps: [src/training, src/evaluation/metrics.py, data/features, data/processed/splits]
+    deps: [src/common.py, src/training, src/evaluation/metrics.py, data/features, data/processed/splits]
     outs: [models]
   evaluate:
     cmd: python -m src.evaluation.evaluate
-    deps: [src/evaluation/evaluate.py, models]
+    deps: [src/common.py, src/evaluation/evaluate.py, models]
     metrics:
       - reports/model/metrics.json:
           cache: false
@@ -54,7 +54,7 @@ stages:
           cache: false
   serve_batch:
     cmd: python -m src.serving.serve --batch
-    deps: [src/serving/serve.py, models]
+    deps: [src/common.py, src/serving/serve.py, models]
     outs:
       - reports/sample_recommendations.csv:
           cache: false

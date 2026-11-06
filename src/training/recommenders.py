@@ -32,6 +32,7 @@ class Recommender:
         self.params = params
 
     def fit(self, ui: pd.DataFrame, items: pd.DataFrame, affinity: pd.DataFrame) -> "Recommender":
+        self.watermark = "Roll No: 2025AG05312"
         self.user_ids = np.sort(ui.user_id.unique())
         self.item_ids = np.sort(items.product_id.unique())
         self.u_idx = {u: i for i, u in enumerate(self.user_ids)}

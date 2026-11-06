@@ -1,0 +1,143 @@
+# Roll No: 2025AG05312 | DVC data versioning evidence
+
+$ git log --oneline --decorate
+8e8b9ae (HEAD -> main, tag: data-v2) Data v2: full history to 2026-10-31 via incremental ingestion
+412aab6 (tag: data-v1) Data v1: events up to 2026-10-17 (pipeline run 1)
+
+$ dvc dag
+                    +------------------+                
+                    | simulate_sources |                
+                    +------------------+                
+                              *                         
+                              *                         
+                              *                         
+                         +--------+                     
+                         | ingest |                     
+                         +--------+                     
+                              *                         
+                              *                         
+                              *                         
+                        +----------+                    
+                        | validate |                    
+                        +----------+                    
+                              *                         
+                              *                         
+                              *                         
+                        +---------+                     
+                        | prepare |                     
+                        +---------+                     
+                              *                         
+                              *                         
+                              *                         
+                       +-----------+                    
+                       | transform |*                   
+                    ***+-----------+ ***                
+                ****          *         *****           
+            ****              *              ***        
+        ****                  *                 *****   
+     ***             +---------------+               ** 
+       *             | feature_store |             ***  
+        ***          +---------------+            *     
+           *           **          ***         ***      
+            ***      **               *       *         
+               *   **                  **   **          
+             +-------+         +---------------------+  
+             | train |         | pre_training_checks |  
+             +-------+         +---------------------+  
+           **         ***                               
+         **              *                              
+        *                 **                            
++----------+         +-------------+                    
+| evaluate |         | serve_batch |                    
++----------+         +-------------+                    
+
+$ dvc params diff data-v1 data-v2
+Path                 Param            data-v1     data-v2
+configs/params.yaml  source.end_date  2026-10-18  2026-11-01
+
+$ dvc diff data-v1 data-v2
+Added:
+    data/features/offline/item_popularity_quality/as_of=2026-11-01.parquet
+    data/features/offline/user_category_affinity/as_of=2026-11-01.parquet
+    data/features/offline/user_item_interaction/as_of=2026-11-01.parquet
+    data/features/offline/user_profile_behaviour/as_of=2026-11-01.parquet
+    data/raw/catalog_api/products/ingest_date=2026-11-06/batch_20261106005942.json
+    data/raw/catalog_api/products/ingest_date=2026-11-06/batch_20261106005942.manifest.json
+    data/raw/clickstream/interactions/ingest_date=2026-11-06/batch_20261106005942.csv
+    data/raw/clickstream/interactions/ingest_date=2026-11-06/batch_20261106005942.manifest.json
+    data/raw/crm/users/ingest_date=2026-11-06/batch_20261106005942.csv
+    data/raw/crm/users/ingest_date=2026-11-06/batch_20261106005942.manifest.json
+
+Modified:
+    data/errors/
+    data/errors/interactions_rejected.csv
+    data/features/
+    data/features/online.db
+    data/features/registry.db
+    data/processed/clean/
+    data/processed/clean/interactions.parquet
+    data/processed/derived/
+    data/processed/derived/item_popularity.parquet
+    data/processed/derived/matrix_user_index.parquet
+    data/processed/derived/user_activity_summary.parquet
+    data/processed/derived/user_item_interactions_long.parquet
+    data/processed/derived/user_item_matrix_train.npz
+    data/processed/splits/
+    data/processed/splits/test_interactions.parquet
+    data/processed/splits/train_interactions.parquet
+    data/processed/splits/valid_interactions.parquet
+    data/raw/
+    data/raw/_state/ingestion_state.json
+    data/sources/
+    data/sources/clickstream/interactions_export.csv
+    data/validated/
+    data/validated/interactions.parquet
+    data/warehouse/
+    data/warehouse/recsys_warehouse.db
+    models/
+    models/recommender_2025AG05312.pkl
+    reports/eda/
+    reports/eda/01_daily_events.png
+    reports/eda/02_funnel.png
+    reports/eda/03_item_long_tail.png
+    reports/eda/04_user_activity.png
+    reports/eda/05_ratings.png
+    reports/eda/06_category_share.png
+    reports/eda/07_hour_of_day.png
+    reports/eda/eda_summary.json
+    reports/validation/validation_report.html
+
+files summary: 10 added, 26 modified
+
+$ dvc metrics diff data-v1 data-v2
+Path                        Metric                    data-v1    data-v2    Change
+reports/model/metrics.json  baseline_coverage         0.0633     0.0683     0.005
+reports/model/metrics.json  baseline_diversity        0.8818     0.8963     0.0145
+reports/model/metrics.json  baseline_hit_rate_at_10   0.2638     0.2628     -0.001
+reports/model/metrics.json  baseline_map_at_10        0.0604     0.0526     -0.0079
+reports/model/metrics.json  baseline_ndcg_at_10       0.0951     0.0851     -0.01
+reports/model/metrics.json  baseline_novelty          6.6191     6.6859     0.0668
+reports/model/metrics.json  baseline_precision_at_10  0.0315     0.0312     -0.0004
+reports/model/metrics.json  baseline_recall_at_10     0.1468     0.1312     -0.0156
+reports/model/metrics.json  bias_model_rmse           0.8984     0.9202     0.0218
+reports/model/metrics.json  global_mean_rmse          0.9484     0.9688     0.0204
+reports/model/metrics.json  winner_coverage           0.57       0.455      -0.115
+reports/model/metrics.json  winner_diversity          0.7086     0.7191     0.0105
+reports/model/metrics.json  winner_hit_rate_at_10     0.3435     0.3529     0.0094
+reports/model/metrics.json  winner_map_at_10          0.0766     0.0789     0.0024
+reports/model/metrics.json  winner_ndcg_at_10         0.1217     0.1244     0.0026
+reports/model/metrics.json  winner_novelty            7.5987     7.5261     -0.0726
+reports/model/metrics.json  winner_precision_at_10    0.0417     0.0451     0.0033
+reports/model/metrics.json  winner_recall_at_10       0.1911     0.185      -0.0061
+
+# Restore demo: time-travel to data-v1 and back
+$ git checkout -q data-v1 && dvc checkout -q
+61383 clean interactions
+$ git checkout -q main && dvc checkout -q
+75923 clean interactions
+
+$ dvc status
+Data and pipelines are up to date.
+
+$ dvc remote list
+localstore      ../../dm4ml-dvc-remote (default)

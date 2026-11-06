@@ -153,6 +153,6 @@ def save_fig(fig, path: Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     watermark_figure(fig)
     fig.tight_layout()
-    fig.savefig(path, facecolor=SURFACE)
+    fig.savefig(path, facecolor=SURFACE, metadata={"Description": WATERMARK, "Author": ROLL_NO})
     plt.close(fig)
     return path

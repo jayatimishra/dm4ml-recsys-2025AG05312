@@ -13,3 +13,5 @@ mlartifacts/
 /data/warehouse
 /data/features
 /models
+# keep the read-only MLflow evidence DB of the submitted run
+!docs/evidence/mlflow_submitted_runs.db

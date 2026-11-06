@@ -201,6 +201,36 @@ class FeatureStore:
                            params=tuple(keys.values()))
 
 
+def write_catalog(fs: "FeatureStore") -> None:
+    """Human-readable feature catalog (markdown) generated from the registry."""
+    reg = fs.list_features()
+    lines = [f"<!-- Roll No: {ROLL_NO} -->", "# Feature catalog", "",
+             "Generated from the feature registry (`data/features/registry.db`). All features are computed "
+             "point-in-time in the warehouse (`src/transformation/sql/features.sql`) and served from the "
+             "offline store for training and the online store for prediction.", ""]
+    for v in FEATURE_VIEWS:
+        meta = fs.view(v.name)
+        lines += [f"## {v.name} (v{meta['version']})", "",
+                  f"{v.description}. Entity key: `{', '.join(v.entities)}`. Source table: `{v.source_table}`. "
+                  f"TTL: {v.ttl_days} days. Owner: {v.owner}. Definition hash: `{meta['definition_hash']}`.", "",
+                  "| Feature | Type | Description | Used by |", "|---|---|---|---|"]
+        for f, (dt, desc) in v.features.items():
+            used = USED_BY.get(f, "serving enrichment / analysis")
+            lines.append(f"| `{f}` | {dt} | {desc} | {used} |")
+        lines.append("")
+    (REPORTS / "feature_catalog.md").write_text("\n".join(lines), encoding="utf-8")
+
+
+USED_BY = {
+    "ui_strength": "all CF models (implicit matrix)", "i_n_views": "popularity baseline",
+    "i_n_carts": "popularity baseline", "i_n_purchases": "popularity baseline",
+    "i_events_last_7d": "popularity baseline (trending)", "category": "hybrid, diversity metric",
+    "uc_affinity": "hybrid (content signal)", "price": "serving enrichment",
+    "i_avg_rating": "serving enrichment", "in_stock": "serving enrichment",
+    "u_favourite_category": "serving context",
+}
+
+
 def main() -> dict:
     snaps = json.loads((REPORTS / "transform_summary.json").read_text())["snapshots"]
     fs = FeatureStore()
@@ -212,6 +242,7 @@ def main() -> dict:
                           "serve": fs.materialize(v.name, snaps["serve"], online=True)}
     reg = fs.list_features()
     write_csv(reg, REPORTS / "feature_registry.csv")
+    write_catalog(fs)
 
     # demo: point-in-time retrieval + online lookup (evidence for the report)
     demo_entities = pd.DataFrame({"user_id": [7, 7], "event_timestamp": ["2026-10-20 10:00:00",

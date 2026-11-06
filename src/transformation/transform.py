@@ -23,7 +23,7 @@ import sqlite3
 import numpy as np
 import pandas as pd
 
-from src.common import (PROCESSED, REPORTS, ROOT, SQL_DIR, TEST_DAYS, WAREHOUSE, get_logger, read_parquet, write_parquet,
+from src.common import (WATERMARK, PROCESSED, REPORTS, ROOT, SQL_DIR, TEST_DAYS, WAREHOUSE, get_logger, read_parquet, write_parquet,
                     stamp_sqlite, write_csv, write_json)
 
 log = get_logger("transformation")
@@ -146,7 +146,8 @@ def export_datasets(conn, snaps: dict) -> dict:
     m = sparse.csr_matrix((ui.ui_strength.values,
                            (np.searchsorted(users, ui.user_id), np.searchsorted(items, ui.product_id))),
                           shape=(len(users), len(items)))
-    sparse.save_npz(DERIVED / "user_item_matrix_train.npz", m)
+    np.savez_compressed(DERIVED / "user_item_matrix_train.npz", data=m.data, indices=m.indices,
+                        indptr=m.indptr, shape=np.array(m.shape), watermark=np.array(WATERMARK))  # CSR parts
     write_parquet(pd.DataFrame({"row": range(len(users)), "user_id": users}), DERIVED / "matrix_user_index.parquet")
     write_parquet(pd.DataFrame({"col": range(len(items)), "product_id": items}), DERIVED / "matrix_item_index.parquet")
     info["user_item_matrix_train"] = {"shape": list(m.shape), "nnz": int(m.nnz),

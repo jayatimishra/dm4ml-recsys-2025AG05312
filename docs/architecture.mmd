@@ -1,0 +1,76 @@
+%% Roll No: 2025AG05312 | AIML ZG529 Data Management for ML | Assignment
+%%{init: {"theme": "neutral", "flowchart": {"nodeSpacing": 30, "rankSpacing": 40}}}%%
+flowchart TB
+  subgraph SRC["Source systems (simulated)"]
+    direction LR
+    S2["CRM users<br/>CSV"]
+    S1["Clickstream export<br/>CSV"]
+    S3["Product catalog<br/>REST API (paged, auth)"]
+  end
+
+  subgraph ING["1 Ingestion"]
+    direction LR
+    I2["Full snapshot"]
+    I1["Incremental CDC pull<br/>event_id high-water mark"]
+    I3["Paginated pull<br/>retry + backoff"]
+  end
+
+  RAW[("data/raw<br/>immutable, partitioned<br/>+ manifests + audit log")]
+
+  subgraph VAL["2 Validation gate (pre-ingestion)"]
+    direction LR
+    V1["Data contracts as code<br/>29 row checks, 6 dimensions"]
+    V2["Quality gate<br/>schema, volume, nulls,<br/>freshness, reject rate"]
+  end
+  ERR[("data/errors<br/>quarantined rows<br/>+ reasons")]
+  VR["Validation report<br/>HTML / JSON / CSV"]
+
+  subgraph PREP["3 Preparation"]
+    P1["Repair, standardise,<br/>impute, dedupe + EDA"]
+  end
+
+  subgraph TR["4 Transformation (ELT in SQL)"]
+    direction LR
+    T1[("SQLite star schema<br/>dim_user, dim_product,<br/>dim_date, fact_interactions")]
+    T2["Point-in-time feature SQL<br/>as_of = valid, train, serve"]
+    T3["Time-based splits<br/>+ derived datasets<br/>+ user-item matrix"]
+  end
+
+  subgraph FS["5 Feature store"]
+    direction LR
+    F1["Registry<br/>4 views, 37 features, versions"]
+    F2[("Offline store<br/>Parquet snapshots")]
+    F3[("Online store<br/>latest per key")]
+  end
+
+  PT["6 Pre-training gate<br/>Pandera, leakage, PSI drift"]
+
+  subgraph ML["7-8 Training + evaluation"]
+    direction LR
+    M1["Popularity baseline<br/>Item-KNN, SVD, Hybrid<br/>+ rating models"]
+    M2["Tune on valid window,<br/>test once, retrain on all"]
+    M3[("MLflow tracking<br/>+ model registry<br/>alias: champion")]
+  end
+
+  SV["9 Prediction service<br/>batch + HTTP /recommend"]
+
+  S1 --> I1 --> RAW
+  S2 --> I2 --> RAW
+  S3 --> I3 --> RAW
+  RAW --> V1 --> V2
+  V1 --> ERR
+  V2 --> VR
+  V2 --> P1 --> T1 --> T2 --> F1
+  T1 --> T3 --> PT
+  F1 --> F2 --> PT --> M1 --> M2 --> M3
+  F1 --> F3 --> SV
+  M3 --> SV
+
+  ORC{{"Orchestration: Prefect flow / Airflow DAG / Python runner<br/>Versioning: Git + DVC (dvc.yaml, dvc.lock, data-v1, data-v2)"}}
+  ORC -.-> ING
+  ORC -.-> ML
+
+  classDef store fill:#eef4fc,stroke:#2a78d6,color:#0b0b0b
+  classDef gate fill:#fdf1ea,stroke:#eb6834,color:#0b0b0b
+  class RAW,ERR,T1,F2,F3,M3 store
+  class V2,PT gate
