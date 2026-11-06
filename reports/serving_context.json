@@ -1,7 +1,7 @@
 {
   "_watermark": "Roll No: 2025AG05312",
   "model_uri": "models:/recsys_2025AG05312@champion",
-  "model_version": 4,
+  "model_version": 5,
   "user_profiles": [
     {
       "user_id": "7",

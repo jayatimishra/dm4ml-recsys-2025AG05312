@@ -215,19 +215,17 @@ stages:
       size: 51201
       nfiles: 8
     outs:
-    - path: models
+    - path: models/recommender_2025AG05312.pkl
       hash: md5
-      md5: 88e8f88eaa1752f31ee99e895f7b147b.dir
+      md5: 84d0e682a15100f91418b88bf46b0fb1
       size: 17846423
-      nfiles: 1
   evaluate:
     cmd: python -m src.evaluation.evaluate
     deps:
-    - path: models
+    - path: models/recommender_2025AG05312.pkl
       hash: md5
-      md5: 88e8f88eaa1752f31ee99e895f7b147b.dir
+      md5: 84d0e682a15100f91418b88bf46b0fb1
       size: 17846423
-      nfiles: 1
     - path: src/common.py
       hash: md5
       md5: d2c718a79502e108cee255639cc15f92
@@ -248,11 +246,10 @@ stages:
   serve_batch:
     cmd: python -m src.serving.serve --batch
     deps:
-    - path: models
+    - path: models/recommender_2025AG05312.pkl
       hash: md5
-      md5: 88e8f88eaa1752f31ee99e895f7b147b.dir
+      md5: 84d0e682a15100f91418b88bf46b0fb1
       size: 17846423
-      nfiles: 1
     - path: src/common.py
       hash: md5
       md5: d2c718a79502e108cee255639cc15f92
@@ -264,5 +261,5 @@ stages:
     outs:
     - path: reports/sample_recommendations.csv
       hash: md5
-      md5: 63ac478930976c9e50e041e3ca5cc4b7
+      md5: deda39a98a7cd7f3fd10a7040b28bfaf
       size: 2714

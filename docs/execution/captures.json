@@ -1,0 +1,122 @@
+{
+ "_watermark": "Roll No: 2025AG05312",
+ "steps": [
+  {
+   "id": "00_setup",
+   "title": "Environment",
+   "command": "python --version && pip show pandas mlflow prefect dvc pandera 2>/dev/null | grep -E '^(Name|Version)' | paste - - && git log --oneline --decorate -3",
+   "exit_code": 0,
+   "seconds": 0.5,
+   "captured_at": "2026-11-06 03:56:48",
+   "output": "Python 3.13.18\nName: pandas\tVersion: 3.0.5\nName: mlflow\tVersion: 3.17.2\nName: prefect\tVersion: 3.9.1\nName: dvc\tVersion: 3.67.1\nName: pandera\tVersion: 0.35.0\n8f84465 (HEAD -> main) Final submission: docs, report, evaluation, watermark tooling\n8e8b9ae (tag: data-v2) Data v2: full history to 2026-10-31 via incremental ingestion\n412aab6 (tag: data-v1) Data v1: events up to 2026-10-17 (pipeline run 1)\n"
+  },
+  {
+   "id": "01_simulate_sources",
+   "title": "Source systems (synthetic data)",
+   "command": "python -m src.ingestion.generate_sources --end-date 2026-11-01",
+   "exit_code": 0,
+   "seconds": 1.6,
+   "captured_at": "2026-11-06 03:56:50",
+   "output": "2026-11-06 03:56:50,247 | 2025AG05312 | ingestion.generate | INFO | Generated sources for 2025AG05312: events=77217 users=1505 products=604 (end_date=2026-11-01)\n"
+  },
+  {
+   "id": "02_ingest",
+   "title": "Stage 1: Data ingestion",
+   "command": "python -m src.ingestion.ingest --mode incremental && find data/raw -type f | sort",
+   "exit_code": 0,
+   "seconds": 1.8,
+   "captured_at": "2026-11-06 03:56:52",
+   "output": "2026-11-06 03:56:51,019 | 2025AG05312 | ingestion.ingest | INFO | clickstream: ingested 77217 rows (incremental), hwm None -> e0076302\n2026-11-06 03:56:51,028 | 2025AG05312 | ingestion.ingest | INFO | crm users: ingested 1505 rows (full snapshot)\n2026-11-06 03:56:51,044 | 2025AG05312 | ingestion.ingest | WARNING | API http://127.0.0.1:8529/api/v1/products?page=3&page_size=100 returned 503, retry 1/3 in 0.5s\n2026-11-06 03:56:52,064 | 2025AG05312 | ingestion.ingest | INFO | catalog api: ingested 604 records over 7 pages\ndata/raw/_state/ingestion_state.json\ndata/raw/catalog_api/products/ingest_date=2026-11-06/batch_20261106035650.json\ndata/raw/catalog_api/products/ingest_date=2026-11-06/batch_20261106035650.manifest.json\ndata/raw/clickstream/interactions/ingest_date=2026-11-06/batch_20261106035650.csv\ndata/raw/clickstream/interactions/ingest_date=2026-11-06/batch_20261106035650.manifest.json\ndata/raw/crm/users/ingest_date=2026-11-06/batch_20261106035650.csv\ndata/raw/crm/users/ingest_date=2026-11-06/batch_20261106035650.manifest.json\n"
+  },
+  {
+   "id": "03_validate",
+   "title": "Stage 2: Data validation",
+   "command": "python -m src.validation.validate && echo && head -5 data/errors/interactions_rejected.csv | cut -c1-150",
+   "exit_code": 0,
+   "seconds": 0.9,
+   "captured_at": "2026-11-06 03:56:53",
+   "output": "2026-11-06 03:56:52,689 | 2025AG05312 | validation | INFO | users: in=1505 dup_dropped=5 rejected=0 passed=1500\n2026-11-06 03:56:52,719 | 2025AG05312 | validation | INFO | products: in=604 dup_dropped=4 rejected=0 passed=600\n2026-11-06 03:56:52,974 | 2025AG05312 | validation | INFO | interactions: in=77217 dup_dropped=915 rejected=379 passed=75923\n2026-11-06 03:56:53,028 | 2025AG05312 | validation | INFO | Validation done: DQ score=0.9980 gate=PASSED\n\n# Roll No: 2025AG05312 | AIML ZG529 Data Management for Machine Learning\nevent_id,user_id,product_id,event_type,rating,event_timestamp,session_id,device,failed_checks\ne0000095,,1467,view,,2026-05-14 14:06:17,s830_9,mobile,INT_002;INT_010\ne0000207,,1392,view,,2026-05-18 00:35:32,s36_13,tablet,INT_002;INT_010\ne0000218,,1145,view,,2026-05-18 11:01:33,s633_13,desktop,INT_002;INT_010\n"
+  },
+  {
+   "id": "04_prepare",
+   "title": "Stage 3: Data preparation",
+   "command": "python -m src.preparation.prepare && ls reports/eda",
+   "exit_code": 0,
+   "seconds": 1.8,
+   "captured_at": "2026-11-06 03:56:54",
+   "output": "2026-11-06 03:56:54,830 | 2025AG05312 | preparation | INFO | Prepared users=1500 products=600 interactions=75923; repairs={'users.age_imputed_with_median': 35, 'users.gender_set_unknown': 5, 'users.city_filled_unknown': 45, 'products.category_casing_fixed': 3, 'products.category_inferred_from_title': 12, 'products.price_text_parsed': 6, 'products.price_imputed_category_median': 15, 'products.price_winsorised_p99_5': 3, 'interactions.event_type_normalised': 305, 'interactions.rating_invalid_set_null': 53}\n01_daily_events.png\n02_funnel.png\n03_item_long_tail.png\n04_user_activity.png\n05_ratings.png\n06_category_share.png\n07_hour_of_day.png\neda_summary.json\n"
+  },
+  {
+   "id": "05_transform",
+   "title": "Stage 4: Data transformation",
+   "command": "python -m src.transformation.transform && python -c \"import sqlite3; c=sqlite3.connect('data/warehouse/recsys_warehouse.db'); [print(f'{t:22s}', c.execute(f'select count(*) from {t}').fetchone()[0]) for t in ['dim_user','dim_product','dim_date','fact_interactions','feat_user','feat_item','agg_user_item']]\" && ls data/processed/splits data/processed/derived",
+   "exit_code": 0,
+   "seconds": 4.4,
+   "captured_at": "2026-11-06 03:56:59",
+   "output": "2026-11-06 03:56:56,173 | 2025AG05312 | transformation | INFO | Star schema loaded: {'dim_user': 1500, 'dim_product': 600, 'dim_date': 180, 'fact_interactions': 75923}\n2026-11-06 03:56:56,778 | 2025AG05312 | transformation | INFO | Features materialised as_of=2026-10-04 00:00:00: {'feat_user': 1500, 'feat_item': 600, 'agg_user_item': 26433, 'feat_user_category': 9371}\n2026-11-06 03:56:57,576 | 2025AG05312 | transformation | INFO | Features materialised as_of=2026-10-18 00:00:00: {'feat_user': 1500, 'feat_item': 600, 'agg_user_item': 33353, 'feat_user_category': 10891}\n2026-11-06 03:56:58,549 | 2025AG05312 | transformation | INFO | Features materialised as_of=2026-11-01 00:00:00: {'feat_user': 1500, 'feat_item': 600, 'agg_user_item': 40220, 'feat_user_category': 11883}\n2026-11-06 03:56:59,172 | 2025AG05312 | transformation | INFO | Splits exported: {'train': 61383, 'valid': 13680, 'test': 14540}\ndim_user               1500\ndim_product            600\ndim_date               180\nfact_interactions      75923\nfeat_user              4500\nfeat_item              1800\nagg_user_item          100006\ndata/processed/derived:\nitem_popularity.parquet\nmatrix_item_index.parquet\nmatrix_user_index.parquet\nuser_activity_summary.parquet\nuser_item_interactions_long.parquet\nuser_item_matrix_train.npz\n\ndata/processed/splits:\ntest_interactions.parquet\ntrain_interactions.parquet\nvalid_interactions.parquet\n"
+  },
+  {
+   "id": "06_feature_store",
+   "title": "Stage 5: Feature management",
+   "command": "python -m src.features.feature_store && python -c \"import sys; sys.path.insert(0,'.'); from src.features.feature_store import FeatureStore; fs=FeatureStore(); print(fs.list_features().groupby('feature_view').feature_name.count()); print(fs.get_online_features('user_profile_behaviour', {'user_id': 42})[['user_id','u_n_events','u_n_purchases','u_avg_rating_given','u_favourite_category','u_days_since_last_event']].to_string())\"",
+   "exit_code": 0,
+   "seconds": 1.5,
+   "captured_at": "2026-11-06 03:57:00",
+   "output": "2026-11-06 03:57:00,515 | 2025AG05312 | features | INFO | Feature store: 37 features in 4 views; {'user_profile_behaviour': {'valid': 1500, 'train': 1500, 'serve': 1500}, 'item_popularity_quality': {'valid': 600, 'train': 600, 'serve': 600}, 'user_item_interaction': {'valid': 26433, 'train': 33353, 'serve': 40220}, 'user_category_affinity': {'valid': 9371, 'train': 10891, 'serve': 11883}}\nfeature_view\nitem_popularity_quality    15\nuser_category_affinity      1\nuser_item_interaction       5\nuser_profile_behaviour     16\nName: feature_name, dtype: int64\n   user_id  u_n_events  u_n_purchases u_avg_rating_given u_favourite_category  u_days_since_last_event\n0       42          13            1.0               None              Fashion                     8.83\n"
+  },
+  {
+   "id": "07_pre_training_checks",
+   "title": "Stage 6: Pre-training validation",
+   "command": "python -m src.validation.pre_training_checks",
+   "exit_code": 0,
+   "seconds": 0.8,
+   "captured_at": "2026-11-06 03:57:01",
+   "output": "2026-11-06 03:57:01,712 | 2025AG05312 | validation.pre_training | INFO | pandera:train_interactions             PASS \n2026-11-06 03:57:01,712 | 2025AG05312 | validation.pre_training | INFO | pandera:test_interactions              PASS \n2026-11-06 03:57:01,712 | 2025AG05312 | validation.pre_training | INFO | pandera:user_features@train            PASS \n2026-11-06 03:57:01,712 | 2025AG05312 | validation.pre_training | INFO | pandera:item_features@train            PASS \n2026-11-06 03:57:01,712 | 2025AG05312 | validation.pre_training | INFO | pandera:user_item_features@train       PASS \n2026-11-06 03:57:01,712 | 2025AG05312 | validation.pre_training | INFO | temporal_leakage                       PASS \n2026-11-06 03:57:01,712 | 2025AG05312 | validation.pre_training | INFO | test_referential_integrity             PASS \n2026-11-06 03:57:01,712 | 2025AG05312 | validation.pre_training | INFO | drift_psi:event_type_mix               PASS 0.0001\n2026-11-06 03:57:01,712 | 2025AG05312 | validation.pre_training | INFO | drift_psi:category_mix                 PASS 0.0025\n"
+  },
+  {
+   "id": "08_train",
+   "title": "Stage 7: Model training (MLflow)",
+   "command": "python -m src.training.train",
+   "exit_code": 0,
+   "seconds": 11.5,
+   "captured_at": "2026-11-06 03:57:13",
+   "output": "2026-11-06 03:57:05,716 | 2025AG05312 | training | INFO | tune popularity {}                                                 ndcg@10=0.0951\n2026-11-06 03:57:05,891 | 2025AG05312 | training | INFO | tune item_knn   {'neighbours': 20}                                 ndcg@10=0.1123\n2026-11-06 03:57:06,052 | 2025AG05312 | training | INFO | tune item_knn   {'neighbours': 50}                                 ndcg@10=0.1164\n2026-11-06 03:57:06,205 | 2025AG05312 | training | INFO | tune item_knn   {'neighbours': 100}                                ndcg@10=0.1220\n2026-11-06 03:57:06,354 | 2025AG05312 | training | INFO | tune item_knn   {'neighbours': 200}                                ndcg@10=0.1217\n2026-11-06 03:57:06,508 | 2025AG05312 | training | INFO | tune item_knn   {'neighbours': 400}                                ndcg@10=0.1220\n2026-11-06 03:57:06,647 | 2025AG05312 | training | INFO | tune svd_mf     {'factors': 16}                                    ndcg@10=0.0974\n2026-11-06 03:57:06,789 | 2025AG05312 | training | INFO | tune svd_mf     {'factors': 32}                                    ndcg@10=0.0668\n2026-11-06 03:57:06,961 | 2025AG05312 | training | INFO | tune svd_mf     {'factors': 64}                                    ndcg@10=0.0467\n2026-11-06 03:57:07,120 | 2025AG05312 | training | INFO | tune hybrid     {'factors': 32, 'alpha': 0.1, 'beta': 0.05}        ndcg@10=0.0766\n2026-11-06 03:57:07,290 | 2025AG05312 | training | INFO | tune hybrid     {'factors': 32, 'alpha': 0.1, 'beta': 0.15}        ndcg@10=0.0908\n2026-11-06 03:57:07,439 | 2025AG05312 | training | INFO | tune hybrid     {'factors': 32, 'alpha': 0.25, 'beta': 0.05}       ndcg@10=0.0777\n2026-11-06 03:57:07,598 | 2025AG05312 | training | INFO | tune hybrid     {'factors': 32, 'alpha': 0.25, 'beta': 0.15}       ndcg@10=0.0917\n2026-11-06 03:57:07,780 | 2025AG05312 | training | INFO | tune hybrid     {'factors': 64, 'alpha': 0.1, 'beta': 0.05}        ndcg@10=0.0591\n2026-11-06 03:57:07,955 | 2025AG05312 | training | INFO | tune hybrid     {'factors': 64, 'alpha': 0.1, 'beta': 0.15}        ndcg@10=0.0795\n2026-11-06 03:57:08,156 | 2025AG05312 | training | INFO | tune hybrid     {'factors': 64, 'alpha': 0.25, 'beta': 0.05}       ndcg@10=0.0624\n2026-11-06 03:57:08,315 | 2025AG05312 | training | INFO | tune hybrid     {'factors': 64, 'alpha': 0.25, 'beta': 0.15}       ndcg@10=0.0789\n2026-11-06 03:57:09,137 | 2025AG05312 | training | INFO | Rating models: [{'model': 'global_mean', 'rmse': 0.9687889099967201, 'mae': 0.7922681998377661, 'n_ratings': 958}, {'model': 'bias_model', 'rmse': 0.9201453302164748, 'mae': 0.7587376392366119, 'n_ratings': 958}]\n2026-11-06 03:57:09,138 | 2025AG05312 | training | INFO | Winner on test: item_knn {'neighbours': 100} ndcg@10=0.1244\n/usr/local/lib/python3.13/site-packages/mlflow/pyfunc/utils/data_validation.py:187: UserWarning: \u001b[33mAdd type hints to the `predict` method to enable data validation and automatic signature inference during model logging. Check https://mlflow.org/docs/latest/model/python_model.html#type-hint-usage-in-pythonmodel for more details.\u001b[0m\n  color_warning(\n2026/11/06 03:57:04 INFO mlflow.store.db.utils: Creating initial MLflow database tables...\n2026/11/06 03:57:04 INFO mlflow.store.db.utils: Updating database tables\n2026/11/06 03:57:09 WARNING mlflow.pyfunc: Passing a Python object as `python_model` causes it to be serialized using CloudPickle, it requires exercising caution as Python object serialization mechanisms may execute arbitrary code during deserialization.Consider using a file path (str or Path) instead. See https://mlflow.org/docs/latest/ml/model/models-from-code/ for details.\n2026/11/06 03:57:09 INFO mlflow.pyfunc: Inferring model signature from input example\n\nDownloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]\nDownloading artifacts: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:00<00:00, 111.83it/s]\nDownloading artifacts: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 1/1 [00:00<00:00, 109.32it/s]\nSuccessfully registered model 'recsys_2025AG05312'.\nCreated version '1' of model 'recsys_2025AG05312'.\n"
+  },
+  {
+   "id": "09_evaluate",
+   "title": "Stage 8: Model evaluation",
+   "command": "python -m src.evaluation.evaluate && tail -n +3 reports/model/results_table.md",
+   "exit_code": 0,
+   "seconds": 2.9,
+   "captured_at": "2026-11-06 03:57:16",
+   "output": "2026-11-06 03:57:15,904 | 2025AG05312 | evaluation | INFO | Evaluation table written; winner=item_knn ndcg@10=0.1244 vs baseline 0.0851\n\nEvaluated on 921 users with at least one new add-to-cart or purchase in the 14-day test window. Selected model: **Item-KNN CF**.\n\n| Model | Params | precision@10 | recall@10 | ndcg@10 | map@10 | hit_rate@10 | coverage | diversity | novelty | NDCG lift |\n|---|---|---|---|---|---|---|---|---|---|---|\n| Popularity (baseline) | `{}` | 0.0312 | 0.1312 | 0.0851 | 0.0526 | 0.2628 | 0.0683 | 0.8963 | 6.69 | +0.0% |\n| **Item-KNN CF** | `{\"neighbours\": 100}` | 0.0451 | 0.1850 | 0.1244 | 0.0789 | 0.3529 | 0.4550 | 0.7191 | 7.53 | +46.1% |\n| SVD matrix factorisation | `{\"factors\": 16}` | 0.0367 | 0.1504 | 0.0990 | 0.0605 | 0.2964 | 0.3817 | 0.6526 | 8.01 | +16.3% |\n| Hybrid (SVD + content + popularity) | `{\"factors\": 32, \"alpha\": 0.25, \"beta\": 0.15}` | 0.0359 | 0.1505 | 0.1007 | 0.0624 | 0.2899 | 0.7100 | 0.3407 | 8.46 | +18.3% |\n\n## Explicit rating prediction (supplementary)\n\n| Model | RMSE | MAE | Test ratings |\n|---|---|---|---|\n| global_mean | 0.9688 | 0.7923 | 958 |\n| bias_model | 0.9201 | 0.7587 | 958 |\n"
+  },
+  {
+   "id": "10_serve",
+   "title": "Stage 9: Prediction service",
+   "command": "python -m src.serving.serve --batch && { python -m src.serving.serve --serve > /tmp/serve_capture.log 2>&1 & SRV=$!; } ; for i in $(seq 1 40); do sleep 1; curl -s 'http://127.0.0.1:8600/health' >/dev/null && break; done; curl -s 'http://127.0.0.1:8600/recommend?user_id=42&k=5' | python -m json.tool | head -40; kill $SRV",
+   "exit_code": 0,
+   "seconds": 7.8,
+   "captured_at": "2026-11-06 03:57:24",
+   "output": "2026-11-06 03:57:19,715 | 2025AG05312 | serving | INFO | Batch recommendations for [7, 42, 314, 1001, 99999] written (model v1); user 99999 is a cold-start test\n{\n    \"served_by\": \"2025AG05312\",\n    \"recommendations\": [\n        {\n            \"user_id\": 42,\n            \"rank\": 1,\n            \"product_id\": 1327,\n            \"score\": 1.14614,\n            \"category\": \"Automotive\",\n            \"brand\": \"BrandQ\",\n            \"price\": 3210.68,\n            \"i_avg_rating\": 3.379,\n            \"in_stock\": 1,\n            \"model_version\": 1\n        },\n        {\n            \"user_id\": 42,\n            \"rank\": 2,\n            \"product_id\": 1160,\n            \"score\": 0.95491,\n            \"category\": \"Sports\",\n            \"brand\": \"BrandM\",\n            \"price\": 1907.79,\n            \"i_avg_rating\": 3.277,\n            \"in_stock\": 1,\n            \"model_version\": 1\n        },\n        {\n            \"user_id\": 42,\n            \"rank\": 3,\n            \"product_id\": 1472,\n            \"score\": 0.87505,\n            \"category\": \"Fashion\",\n            \"brand\": \"BrandL\",\n            \"price\": 1202.66,\n            \"i_avg_rating\": 4.074,\n            \"in_stock\": 1,\n            \"model_version\": 1\n        },\n        {\n/usr/local/lib/python3.13/site-packages/mlflow/pyfunc/utils/data_validation.py:187: UserWarning: \u001b[33mAdd type hints to the `predict` method to enable data validation and automatic signature inference during model logging. Check https://mlflow.org/docs/latest/model/python_model.html#type-hint-usage-in-pythonmodel for more details.\u001b[0m\n  color_warning(\n"
+  },
+  {
+   "id": "11_orchestration",
+   "title": "Orchestration: full DAG run",
+   "command": "python dags/run_pipeline.py 2>&1 | grep orchestrator",
+   "exit_code": 0,
+   "seconds": 19.6,
+   "captured_at": "2026-11-06 03:57:43",
+   "output": "2026-11-06 03:57:25,940 | 2025AG05312 | orchestrator | INFO | task simulate_sources SUCCESS in 1.3s\n2026-11-06 03:57:27,149 | 2025AG05312 | orchestrator | INFO | task ingest         SUCCESS in 1.2s\n2026-11-06 03:57:27,644 | 2025AG05312 | orchestrator | INFO | task validate       SUCCESS in 0.5s\n2026-11-06 03:57:29,036 | 2025AG05312 | orchestrator | INFO | task prepare        SUCCESS in 1.4s\n2026-11-06 03:57:33,171 | 2025AG05312 | orchestrator | INFO | task transform      SUCCESS in 4.1s\n2026-11-06 03:57:33,804 | 2025AG05312 | orchestrator | INFO | task feature_store  SUCCESS in 0.6s\n2026-11-06 03:57:34,116 | 2025AG05312 | orchestrator | INFO | task pre_training_checks SUCCESS in 0.3s\n2026-11-06 03:57:42,918 | 2025AG05312 | orchestrator | INFO | task train          SUCCESS in 8.8s\n2026-11-06 03:57:43,155 | 2025AG05312 | orchestrator | INFO | task evaluate       SUCCESS in 0.2s\n2026-11-06 03:57:43,277 | 2025AG05312 | orchestrator | INFO | task serve_batch    SUCCESS in 0.1s\n2026-11-06 03:57:43,277 | 2025AG05312 | orchestrator | INFO | Pipeline run 20261106035724: SUCCESS\n"
+  },
+  {
+   "id": "12_dvc",
+   "title": "Versioning: DVC pipeline",
+   "command": "dvc dag && sed -n '/dvc params diff/,/dvc metrics diff/p' reports/versioning/dvc_evidence.txt | head -30",
+   "exit_code": 0,
+   "seconds": 0.8,
+   "captured_at": "2026-11-06 03:57:44",
+   "output": "                    +------------------+                \n                    | simulate_sources |                \n                    +------------------+                \n                              *                         \n                              *                         \n                              *                         \n                         +--------+                     \n                         | ingest |                     \n                         +--------+                     \n                              *                         \n                              *                         \n                              *                         \n                        +----------+                    \n                        | validate |                    \n                        +----------+                    \n                              *                         \n                              *                         \n                              *                         \n                        +---------+                     \n                        | prepare |                     \n                        +---------+                     \n                              *                         \n                              *                         \n                              *                         \n                       +-----------+                    \n                       | transform |*                   \n                    ***+-----------+ ***                \n                ****          *         *****           \n            ****              *              ***        \n        ****                  *                 *****   \n     ***             +---------------+               ** \n       *             | feature_store |             ***  \n        ***          +---------------+            *     \n           *           **          ***         ***      \n            ***      **               *       *         \n               *   **                  **   **          \n             +-------+         +---------------------+  \n             | train |         | pre_training_checks |  \n             +-------+         +---------------------+  \n           **         ***                               \n         **              *                              \n        *                 **                            \n+----------+         +-------------+                    \n| evaluate |         | serve_batch |                    \n+----------+         +-------------+                    \n$ dvc params diff data-v1 data-v2\nPath                 Param            data-v1     data-v2\nconfigs/params.yaml  source.end_date  2026-10-18  2026-11-01\n\n$ dvc diff data-v1 data-v2\nAdded:\n    data/features/offline/item_popularity_quality/as_of=2026-11-01.parquet\n    data/features/offline/user_category_affinity/as_of=2026-11-01.parquet\n    data/features/offline/user_item_interaction/as_of=2026-11-01.parquet\n    data/features/offline/user_profile_behaviour/as_of=2026-11-01.parquet\n    data/raw/catalog_api/products/ingest_date=2026-11-06/batch_20261106005942.json\n    data/raw/catalog_api/products/ingest_date=2026-11-06/batch_20261106005942.manifest.json\n    data/raw/clickstream/interactions/ingest_date=2026-11-06/batch_20261106005942.csv\n    data/raw/clickstream/interactions/ingest_date=2026-11-06/batch_20261106005942.manifest.json\n    data/raw/crm/users/ingest_date=2026-11-06/batch_20261106005942.csv\n    data/raw/crm/users/ingest_date=2026-11-06/batch_20261106005942.manifest.json\n\nModified:\n    data/errors/\n    data/errors/interactions_rejected.csv\n    data/features/\n    data/features/online.db\n    data/features/registry.db\n    data/processed/clean/\n    data/processed/clean/interactions.parquet\n    data/processed/derived/\n    data/processed/derived/item_popularity.parquet\n    data/processed/derived/matrix_user_index.parquet\n    data/processed/derived/user_activity_summary.parquet\n    data/processed/derived/user_item_interactions_long.parquet\n"
+  }
+ ]
+}

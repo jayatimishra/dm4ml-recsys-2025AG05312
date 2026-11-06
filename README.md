@@ -11,6 +11,7 @@ simulate sources -> ingest -> validate -> prepare -> transform -> feature store
 ```
 
 Final report: [`docs/Final_Report_2025AG05312.pdf`](docs/Final_Report_2025AG05312.pdf) ·
+Execution screenshots: [`docs/Execution_Screenshots_2025AG05312.pdf`](docs/Execution_Screenshots_2025AG05312.pdf) ·
 Architecture: [`docs/architecture.png`](docs/architecture.png) ·
 Results: [`reports/model/results_table.md`](reports/model/results_table.md)
 
@@ -119,6 +120,7 @@ docs/                          final report, architecture diagrams, screenshots
 | Experiment tracking | `docs/evidence/mlflow_submitted_runs.db` (params + metrics of every submitted run); `docs/screenshots/mlflow_experiment_runs.png`, `mlflow_model_registry.png` |
 | Data versioning | `dvc.yaml`, `dvc.lock`, Git tags `data-v1`/`data-v2`, `reports/versioning/dvc_evidence.txt` |
 | Final report (PDF) | `docs/Final_Report_2025AG05312.pdf` |
+| Execution screenshots for every stage (PDF) | `docs/Execution_Screenshots_2025AG05312.pdf` (regenerate: `python tools/capture_execution.py && python tools/build_execution_pdf.py`) |
 
 ## Data
 

@@ -68,7 +68,10 @@ def main():
     story = [
         P("End-to-End Data Management Pipeline for a Recommendation System", h1),
         P(f"<b>Roll No:</b> {ROLL_NO} &nbsp;|&nbsp; AIML ZG529 Data Management for Machine Learning, Assignment 2 "
-          "&nbsp;|&nbsp; Domain: e-commerce product recommendations", small),
+          "&nbsp;|&nbsp; Domain: e-commerce product recommendations<br/><b>GitHub:</b> "
+          "<link href='https://github.com/jayatimishra/dm4ml-recsys-2025AG05312' color='#1c5cab'>"
+          "https://github.com/jayatimishra/dm4ml-recsys-2025AG05312</link> &nbsp;|&nbsp; Execution screenshots: "
+          "docs/Execution_Screenshots_2025AG05312.pdf", small),
         Spacer(1, 4),
         P("1. Problem and data", h2),
         P("The pipeline recommends products to users of an online store from their past views, add-to-carts, "

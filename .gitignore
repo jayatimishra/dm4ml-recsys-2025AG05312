@@ -5,13 +5,14 @@ __pycache__/
 logs/
 mlflow.db
 mlartifacts/
+# DVC-cached data (data/errors and data/processed/derived are kept in Git, cache: false)
 /data/sources
 /data/raw
 /data/validated
-/data/errors
-/data/processed
+/data/processed/clean
+/data/processed/splits
 /data/warehouse
 /data/features
-/models
+/models/*.pkl
 # keep the read-only MLflow evidence DB of the submitted run
 !docs/evidence/mlflow_submitted_runs.db

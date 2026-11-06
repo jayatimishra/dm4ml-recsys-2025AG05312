@@ -59,7 +59,9 @@ def prepend_comment(path: Path, prefix: str = "# ") -> bool:
 
 
 def main():
-    for p in list((ROOT / "docs" / "screenshots").glob("*.png")) + [ROOT / "docs" / "architecture.png"]:
+    pngs = [*(ROOT / "docs" / "screenshots").glob("*.png"), *(ROOT / "docs" / "execution").glob("*.png"),
+            *(ROOT / "docs" / "execution_mac").glob("*.png"), ROOT / "docs" / "architecture.png"]
+    for p in pngs:
         if p.exists() and stamp_png(p):
             print("stamped", p.relative_to(ROOT))
     if (ROOT / "mlflow.db").exists():

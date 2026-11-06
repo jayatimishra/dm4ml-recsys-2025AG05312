@@ -21,7 +21,11 @@ stages:
   validate:
     cmd: python -m src.validation.validate
     deps: [src/common.py, src/validation/validate.py, data/raw]
-    outs: [data/validated, data/errors, reports/validation/validation_report.html]
+    outs:
+      - data/validated
+      - data/errors:
+          cache: false           # small error dataset kept in Git so reviewers can open it
+      - reports/validation/validation_report.html
   prepare:
     cmd: python -m src.preparation.prepare
     deps: [src/common.py, src/preparation/prepare.py, data/validated]
@@ -29,7 +33,11 @@ stages:
   transform:
     cmd: python -m src.transformation.transform
     deps: [src/common.py, src/transformation/transform.py, src/transformation/sql, data/processed/clean]
-    outs: [data/warehouse, data/processed/splits, data/processed/derived]
+    outs:
+      - data/warehouse
+      - data/processed/splits
+      - data/processed/derived:
+          cache: false           # derived datasets kept in Git (small)
   feature_store:
     cmd: python -m src.features.feature_store
     deps: [src/common.py, src/features/feature_store.py, data/warehouse]
@@ -42,10 +50,10 @@ stages:
   train:
     cmd: python -m src.training.train
     deps: [src/common.py, src/training, src/evaluation/metrics.py, data/features, data/processed/splits]
-    outs: [models]
+    outs: [models/recommender_2025AG05312.pkl]
   evaluate:
     cmd: python -m src.evaluation.evaluate
-    deps: [src/common.py, src/evaluation/evaluate.py, models]
+    deps: [src/common.py, src/evaluation/evaluate.py, models/recommender_2025AG05312.pkl]
     metrics:
       - reports/model/metrics.json:
           cache: false
@@ -54,7 +62,7 @@ stages:
           cache: false
   serve_batch:
     cmd: python -m src.serving.serve --batch
-    deps: [src/common.py, src/serving/serve.py, models]
+    deps: [src/common.py, src/serving/serve.py, models/recommender_2025AG05312.pkl]
     outs:
       - reports/sample_recommendations.csv:
           cache: false

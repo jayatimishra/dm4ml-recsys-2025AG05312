@@ -85,9 +85,9 @@
     }
   },
   "registered_model": "recsys_2025AG05312",
-  "version": 4,
+  "version": 5,
   "alias": "champion",
-  "release_run_id": "e02e17b0c032463e98a6a8822c2d1ec8",
+  "release_run_id": "24cd827f6f15484bad8afba81e05351d",
   "n_test_users": 921,
   "n_valid_users": 853,
   "rating_models": [
