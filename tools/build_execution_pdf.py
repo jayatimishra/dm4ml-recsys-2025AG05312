@@ -35,7 +35,10 @@ SECTIONS = [
          "The WARNING line is the deliberate HTTP 503 from the mock API, recovered by retry with backoff.")]),
     ("2. Data validation", [
         ("Validation run, quality gate and the error dataset (data/errors)", EX / "03_validate.png", ""),
-        ("Validation report (reports/validation/validation_report.html)", SS / "validation_report_html.png", "")]),
+        ("Validation report (reports/validation/validation_report.html)", SS / "validation_report_html.png",
+         "freshness<=7d shows FAIL because the synthetic event log ends on 31 Oct and this run was on 9 Nov "
+         "(8 days stale). Freshness is a warning-level gate check by design, so the overall gate still PASSED; "
+         "in production this would alert that the upstream export has stopped arriving.")]),
     ("3. Data preparation", [("Cleaning, standardisation and EDA", EX / "04_prepare.png", ""),
                              ("EDA: item long tail", RM / "eda" / "03_item_long_tail.png", "")]),
     ("4. Data transformation", [("Star schema load, point-in-time features, time-based splits, derived datasets",
@@ -46,14 +49,14 @@ SECTIONS = [
                                      EX / "07_pre_training_checks.png", "")]),
     ("7. Model training and experiment tracking", [
         ("Tuning on validation window, one-shot test, release + MLflow registry", EX / "08_train.png", ""),
-        ("MLflow: experiment runs", SS / "mlflow_experiment_runs.png", ""),
-        ("MLflow: model registry with alias 'champion'", SS / "mlflow_model_registry.png", "")]),
+        ("MLflow: experiment runs (tuning, test and release runs for each pipeline execution)", SS / "mlflow_experiment_runs.png", ""),
+        ("MLflow model registry: recsys_2025AG05312 versions 1-3, latest carries alias 'champion'", SS / "mlflow_model_registry.png", "")]),
     ("8. Model evaluation", [("Results table comparing all models", EX / "09_evaluate.png", ""),
                              ("Accuracy metrics", RM / "model" / "ranking_metrics.png", ""),
                              ("Beyond-accuracy metrics", RM / "model" / "beyond_accuracy.png", "")]),
     ("9. Prediction service", [("Batch recommendations and HTTP /recommend endpoint", EX / "10_serve.png", "")]),
     ("10. Orchestration and reproducibility", [
-        ("Prefect flow run: all tasks Completed", SS / "prefect_flow_run.png", ""),
+        ("Prefect flow run noble-porcupine: Completed, 10 task runs in 29 s, dependency graph and logs", SS / "prefect_flow_run.png", ""),
         ("Prefect: run history", SS / "prefect_runs_list.png", ""),
         ("Full DAG run with the dependency-free runner", EX / "11_orchestration.png", ""),
         ("DVC pipeline DAG and data-version diff", EX / "12_dvc.png", "")]),
@@ -114,9 +117,9 @@ def main():
                        "Assignment 2", body), Spacer(1, 6),
              Paragraph(f"<b>GitHub repository:</b> <link href='{GITHUB}' color='#1c5cab'><u>{GITHUB}</u></link>", body),
              Spacer(1, 6),
-             Paragraph("Terminal screenshots were taken on my own machine while running each stage in order from an "
-                       "empty data folder, using the commands in docs/RUN_AND_SCREENSHOT.md. Browser screenshots show "
-                       "the Prefect and MLflow UIs and the HTML validation report." if own else
+             Paragraph("All screenshots were taken on my own machine: terminal output from running each stage in order "
+                       "from an empty data folder (commands in docs/RUN_AND_SCREENSHOT.md), then the Prefect UI, the "
+                       "MLflow UI and the HTML validation report from the same run." if own else
                        "Terminal panels are captured output of each command (tools/capture_execution.py), run in "
                        "order from an empty data folder.", body), Spacer(1, 4)]
     rows = [["#", "Stage", "Command"]] + [
