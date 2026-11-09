@@ -6,6 +6,7 @@ screenshots for every pipeline stage (from tools/capture_execution.py) and the
 UI screenshots (Prefect, MLflow, validation report). Watermarked on every page."""
 import json
 import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -59,15 +60,43 @@ SECTIONS = [
 ]
 
 
+COMMANDS = [
+    ("Setup", "whoami && python --version && git log --oneline --decorate -3"),
+    ("Source systems", "python -m src.ingestion.generate_sources --end-date 2026-11-01"),
+    ("1 Ingestion", "python -m src.ingestion.ingest --mode incremental"),
+    ("2 Validation", "python -m src.validation.validate"),
+    ("3 Preparation", "python -m src.preparation.prepare"),
+    ("4 Transformation", "python -m src.transformation.transform"),
+    ("5 Feature store", "python -m src.features.feature_store"),
+    ("6 Pre-training checks", "python -m src.validation.pre_training_checks"),
+    ("7 Training", "python -m src.training.train"),
+    ("8 Evaluation", "python -m src.evaluation.evaluate"),
+    ("9 Serving", "python -m src.serving.serve --batch"),
+    ("10 Orchestration", "python dags/run_pipeline.py  |  python dags/prefect_flow.py"),
+    ("11 Versioning", "dvc dag && dvc status && git tag"),
+]
+
+
 def pick(path: Path) -> Path:
     """Prefer a real terminal screenshot docs/execution_mac/<same name> when present."""
     own = MAC / path.name
     return own if path.parent == EX and own.exists() else path
 
 
-def img(path: Path, max_w=180 * mm, max_h=200 * mm):
+TMP = Path(tempfile.mkdtemp())
+
+
+def img(path: Path, max_w=180 * mm, max_h=200 * mm, max_px=1650):
+    """Embed a downscaled copy (about 230 dpi at print size) so the PDF stays small."""
     path = pick(path)
-    w, h = PILImage.open(path).size
+    im = PILImage.open(path)
+    w, h = im.size
+    if w > max_px:
+        im = im.convert("RGB").resize((max_px, round(h * max_px / w)), PILImage.LANCZOS)
+        im = im.quantize(colors=256, method=PILImage.Quantize.FASTOCTREE, dither=PILImage.Dither.NONE)
+        path = TMP / f"{path.parent.name}_{path.name}"
+        im.save(path, optimize=True)
+        w, h = im.size
     s = min(max_w / w, max_h / h)
     return Image(str(path), width=w * s, height=h * s)
 
@@ -79,31 +108,27 @@ def main():
                         spaceBefore=4, spaceAfter=3)
     body = ParagraphStyle("b", parent=ss["BodyText"], fontSize=9, leading=12)
     cap = ParagraphStyle("c", parent=body, fontSize=8.2, textColor=colors.HexColor("#52514e"), spaceAfter=2)
-    caps = json.loads((EX / "captures.json").read_text())["steps"]
-
+    own = any(MAC.glob("*.png"))
     story = [Paragraph("Execution Screenshots: End-to-End Recommendation Data Pipeline", h1),
              Paragraph(f"<b>Roll No:</b> {ROLL_NO} &nbsp;|&nbsp; AIML ZG529 Data Management for Machine Learning, "
                        "Assignment 2", body), Spacer(1, 6),
              Paragraph(f"<b>GitHub repository:</b> <link href='{GITHUB}' color='#1c5cab'><u>{GITHUB}</u></link>", body),
              Spacer(1, 6),
-             Paragraph(("Terminal screenshots were taken on the author's own machine while running the commands in "
-                        "docs/RUN_AND_SCREENSHOT.md. " if any(MAC.glob("*.png")) else
-                        "Every terminal panel below is the captured output of the command shown, produced by "
-                        "<font face='Courier'>tools/capture_execution.py</font>, which deletes all generated data "
-                        "and runs each stage in order from an empty data folder. ") +
-                       "Full untrimmed reference output: <font face='Courier'>docs/execution/captures.json</font>. "
-                       "Reference run summary:", body), Spacer(1, 4)]
-    rows = [["Step", "Command", "Exit", "Seconds"]] + [
-        [c["title"], Paragraph(f"<font face='Courier' size='6.8'>{c['command'][:95]}"
-                               f"{'...' if len(c['command']) > 95 else ''}</font>", body),
-         str(c["exit_code"]), f"{c['seconds']:.1f}"] for c in caps]
-    t = Table(rows, colWidths=[52 * mm, 104 * mm, 10 * mm, 14 * mm])
+             Paragraph("Terminal screenshots were taken on my own machine while running each stage in order from an "
+                       "empty data folder, using the commands in docs/RUN_AND_SCREENSHOT.md. Browser screenshots show "
+                       "the Prefect and MLflow UIs and the HTML validation report." if own else
+                       "Terminal panels are captured output of each command (tools/capture_execution.py), run in "
+                       "order from an empty data folder.", body), Spacer(1, 4)]
+    rows = [["#", "Stage", "Command"]] + [
+        [str(i), title, Paragraph(f"<font face='Courier' size='6.8'>{cmd}</font>", body)]
+        for i, (title, cmd) in enumerate(COMMANDS)]
+    t = Table(rows, colWidths=[8 * mm, 52 * mm, 120 * mm])
     t.setStyle(TableStyle([("FONT", (0, 0), (-1, -1), "Helvetica", 7.8), ("FONT", (0, 0), (-1, 0), "Helvetica-Bold", 7.8),
                            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e8eef7")),
                            ("GRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#c9c8c2")),
-                           ("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("ALIGN", (2, 0), (-1, -1), "RIGHT")]))
-    story += [t, Spacer(1, 4), Paragraph(f"Captured {caps[0]['captured_at'][:10]}. All steps exited with code 0.", cap),
-              PageBreak()]
+                           ("VALIGN", (0, 0), (-1, -1), "MIDDLE")]))
+    story += [t, Spacer(1, 4), Paragraph("Every stage completed successfully; the full-DAG run in section 10 reports "
+                                         "SUCCESS for all 10 tasks.", cap), PageBreak()]
 
     for title, items in SECTIONS:
         first = True

@@ -44,7 +44,8 @@ def stamp_png(path: Path) -> bool:
     meta = PngInfo()
     meta.add_text("Description", WATERMARK)
     meta.add_text("watermark", WATERMARK)
-    out.save(path, pnginfo=meta)
+    out = out.quantize(colors=256, method=Image.Quantize.FASTOCTREE, dither=Image.Dither.NONE)
+    out.save(path, pnginfo=meta, optimize=True)      # palette PNG: ~5x smaller, no visible loss
     return True
 
 
