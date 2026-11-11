@@ -25,7 +25,8 @@ stages:
       - data/validated
       - data/errors:
           cache: false           # small error dataset kept in Git so reviewers can open it
-      - reports/validation/validation_report.html
+      - reports/validation/validation_report.html:
+          cache: false
   prepare:
     cmd: python -m src.preparation.prepare
     deps: [src/common.py, src/preparation/prepare.py, data/validated]
